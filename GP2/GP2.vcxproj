@@ -85,6 +85,9 @@
     <ClInclude Include="GameApplication.h" />
     <ClInclude Include="Win32Window.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ScreenSpace.fx" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
