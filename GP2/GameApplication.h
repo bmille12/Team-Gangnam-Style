@@ -1,5 +1,6 @@
 #pragma once
 #include "Win32Window.h"
+#include "Timer.h"
 #include <D3D10.h>
 #include <D3DX10.h>
 
@@ -29,4 +30,13 @@ private:
 	//Effect - BMD
 	ID3D10Effect*           m_pEffect;
 	ID3D10EffectTechnique*  m_pTechnique;
+
+	ID3D10EffectMatrixVariable * m_pViewMatrixVariable;
+	ID3D10EffectMatrixVariable * m_pProjectionMatrixVariable;
+	ID3D10EffectMatrixVariable * m_pWorldMatrixVariable;
+
+	D3DXMATRIX m_matView;
+	D3DXMATRIX m_matProjection;
+	D3DXMATRIX m_matWorld;
+	CTimer m_Timer;
 };

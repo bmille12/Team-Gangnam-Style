@@ -5,9 +5,6 @@ struct Vertex
     D3DXVECTOR3 Pos;
 };
 
-
-
-
 CGameApplication::CGameApplication(void)
 {
 	m_pWindow=NULL;
@@ -66,7 +63,7 @@ bool CGameApplication::initGame()
 #endif
 	//Create the effect - BMD
 	//http://msdn.microsoft.com/en-us/library/bb172658%28v=vs.85%29.aspx -BMD
-	if( FAILED(D3DX10CreateEffectFromFile( TEXT("ScreenSpace.fx"), //The filename of the effect - BMD
+	if( FAILED(D3DX10CreateEffectFromFile( TEXT("Transform.fx"), //The filename of the effect - BMD
 		NULL, //An array of shader macros we leave this NULL - BMD
 		NULL, //ID3D10Include*, this allows to include other files when we are compiling the effect - BMD
 		"fx_4_0", //A string which specfies the effect profile to use, in this case fx_4_0(Shader model 4) - BMD
@@ -125,9 +122,9 @@ bool CGameApplication::initGame()
     // Some vertices - BMD
     Vertex vertices[] =
     {
-        D3DXVECTOR3( 0.0f, 0.5f, 0.5f ),
-        D3DXVECTOR3( 0.5f, -0.5f, 0.5f ),
-        D3DXVECTOR3( -0.5f, -0.5f, 0.5f ),
+        D3DXVECTOR3( 0.0f, 0.5f, 0.0f ),
+        D3DXVECTOR3( 0.5f, -0.5f, 0.0f ),
+        D3DXVECTOR3( -0.5f, -0.5f, 0.0f ),
     };
     
     //The description of the Buffer, this is a common pattern you will see when
@@ -171,6 +168,30 @@ bool CGameApplication::initGame()
     // Set primitive topology, how are we going to interpet the vertices in the vertex buffer - BMD
     //http://msdn.microsoft.com/en-us/library/bb173590%28v=VS.85%29.aspx - BMD
     m_pD3D10Device->IASetPrimitiveTopology( D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST );	
+
+	D3DXVECTOR3 cameraPos(0.0f,0.0f,-10.0f);
+	D3DXVECTOR3 cameraLook(0.0f,0.0f,0.0f);
+	D3DXVECTOR3 cameraUp(0.0f,1.0f,0.0f);
+	D3DXMatrixLookAtLH(&m_matView,&cameraPos,&cameraLook,&cameraUp);
+
+	D3D10_VIEWPORT vp;
+	UINT numViewports=1;
+	m_pD3D10Device->RSGetViewports(&numViewports,&vp);
+
+	D3DXMatrixPerspectiveFovLH(&m_matProjection,(float)D3DX_PI*0.25f,vp.Width/(FLOAT)vp.Height,0.1f,1000.0f);
+
+	D3DXMatrixIdentity(&m_matWorld);
+
+	m_pViewMatrixVariable=m_pEffect->GetVariableByName("matView")->AsMatrix();
+	m_pViewMatrixVariable->SetMatrix((float*)m_matView);
+
+	m_pProjectionMatrixVariable=m_pEffect->GetVariableByName("matProjection")->AsMatrix();
+	m_pProjectionMatrixVariable->SetMatrix((float*)m_matProjection);
+
+	m_pWorldMatrixVariable=m_pEffect->GetVariableByName("matWorld")->AsMatrix();
+	m_pWorldMatrixVariable->SetMatrix((float*)m_matWorld);
+
+	m_Timer.start();
 	return true;
 }
 
@@ -195,6 +216,8 @@ void CGameApplication::render()
 	//http://msdn.microsoft.com/en-us/library/bb173539%28v=vs.85%29.aspx - BMD
     m_pD3D10Device->ClearRenderTargetView( m_pRenderTargetView, ClearColor );
 	//All drawing will occur between the clear and present - BMD
+
+	m_pWorldMatrixVariable->SetMatrix((float*)m_matWorld);
 	 
 	//Get the Description of the technique, we need this in order to
 	//loop through each pass in the technique - BMD
@@ -216,6 +239,12 @@ void CGameApplication::render()
 
 void CGameApplication::update()
 {
+	m_Timer.update();
+	static float elapsedTime;
+	elapsedTime+=m_Timer.getElapsedTime();
+
+	D3DXMatrixRotationY(&m_matWorld,elapsedTime);
+	//D3DXMatrixTranslation(&m_matWorld,1.0f,0.0f,0.0f);
 }
 
 //initGraphics - initialise the graphics subsystem - BMD
