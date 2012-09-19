@@ -23,6 +23,9 @@ private:
 	ID3D10RenderTargetView * m_pRenderTargetView;
 	CWin32Window * m_pWindow;
 
+	ID3D10DepthStencilView * m_pDepthStencelView;
+	ID3D10Texture2D *m_pDepthStencilTexture;
+
 		//Vertex Buffer - BMD
 	ID3D10Buffer*           m_pVertexBuffer;
 	ID3D10InputLayout*      m_pVertexLayout;

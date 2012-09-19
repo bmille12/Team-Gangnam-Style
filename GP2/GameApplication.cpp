@@ -13,6 +13,8 @@ CGameApplication::CGameApplication(void)
 	m_pSwapChain=NULL;
 	m_pEffect=NULL;
 	m_pTechnique=NULL;
+	m_pDepthStencelView=NULL;
+	m_pDepthStencilTexture=NULL;
 }
 
 CGameApplication::~CGameApplication(void)
@@ -28,6 +30,10 @@ CGameApplication::~CGameApplication(void)
 		m_pEffect->Release();
 	if (m_pRenderTargetView)
 		m_pRenderTargetView->Release();
+	if (m_pDepthStencelView)
+		m_pDepthStencelView->Release();
+	if (m_pDepthStencilTexture)
+		m_pDepthStencilTexture->Release();
 	if (m_pSwapChain)
 		m_pSwapChain->Release();
 	if (m_pD3D10Device)
@@ -215,6 +221,7 @@ void CGameApplication::render()
 	//Clear the Render Target
 	//http://msdn.microsoft.com/en-us/library/bb173539%28v=vs.85%29.aspx - BMD
     m_pD3D10Device->ClearRenderTargetView( m_pRenderTargetView, ClearColor );
+	m_pD3D10Device->ClearDepthStencilView(m_pDepthStencelView,D3D10_CLEAR_DEPTH,1.0f,0);
 	//All drawing will occur between the clear and present - BMD
 
 	m_pWorldMatrixVariable->SetMatrix((float*)m_matWorld);
@@ -335,6 +342,31 @@ bool CGameApplication::initGraphics()
 							   //can return back different types dependent on the 2nd param
 		return false;
 
+	D3D10_TEXTURE2D_DESC descDepth;
+	descDepth.Width=width;
+	descDepth.Height=height;
+	descDepth.MipLevels=1;
+	descDepth.ArraySize=1;
+	descDepth.Format=DXGI_FORMAT_D32_FLOAT;
+	descDepth.SampleDesc.Count=1;
+	descDepth.SampleDesc.Quality=0;
+	descDepth.Usage=D3D10_USAGE_DEFAULT;
+	descDepth.BindFlags=D3D10_BIND_DEPTH_STENCIL;
+	descDepth.CPUAccessFlags=0;
+	descDepth.MiscFlags=0;
+
+	if (FAILED(m_pD3D10Device->CreateTexture2D(&descDepth,NULL,&m_pDepthStencilTexture)))
+		return false;
+
+	D3D10_DEPTH_STENCIL_VIEW_DESC descDSV;
+	descDSV.Format=descDepth.Format;
+	descDSV.ViewDimension=D3D10_DSV_DIMENSION_TEXTURE2D;
+	descDSV.Texture2D.MipSlice=0;
+
+	if (FAILED(m_pD3D10Device->CreateDepthStencilView(m_pDepthStencilTexture,&descDSV,&m_pDepthStencelView)))
+		return false;
+
+
 	//Create the Render Target View, a view is the way we access D3D10 resources
 	//http://msdn.microsoft.com/en-us/library/bb173556%28v=vs.85%29.aspx - BMD
 	if (FAILED(m_pD3D10Device->CreateRenderTargetView( pBackBuffer, //The resource we are creating the view for - BMD
@@ -352,7 +384,7 @@ bool CGameApplication::initGraphics()
 	//http://msdn.microsoft.com/en-us/library/bb173597%28v=vs.85%29.aspx - BMD
 	m_pD3D10Device->OMSetRenderTargets(1, //Number  of views - BMD
 		&m_pRenderTargetView, //pointer to an array of D3D10 Render Target Views - BMD
-		NULL); //point to Depth Stencil buffer - BMD
+		m_pDepthStencelView); //point to Depth Stencil buffer - BMD
 
     // Setup the viewport 
 	//http://msdn.microsoft.com/en-us/library/bb172500%28v=vs.85%29.aspx - BMD
