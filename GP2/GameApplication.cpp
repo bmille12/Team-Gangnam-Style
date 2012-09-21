@@ -15,6 +15,9 @@ CGameApplication::CGameApplication(void)
 	m_pTechnique=NULL;
 	m_pDepthStencelView=NULL;
 	m_pDepthStencilTexture=NULL;
+	m_pIndexBuffer=NULL;
+	m_pVertexBuffer=NULL;
+	m_pVertexLayout=NULL;
 }
 
 CGameApplication::~CGameApplication(void)
@@ -24,6 +27,8 @@ CGameApplication::~CGameApplication(void)
 
 	if (m_pVertexBuffer)
 		m_pVertexBuffer->Release();
+	if (m_pIndexBuffer)
+		m_pIndexBuffer->Release();
 	if (m_pVertexLayout)
 		m_pVertexLayout->Release();
 	if (m_pEffect)
@@ -171,6 +176,24 @@ bool CGameApplication::initGame()
 		&stride, //Pointer to an array of strides of vertices in the buffer - BMD
 		&offset );//Pointer to an array of offsets to the vertices in the vertex buffers - BMD
 
+
+	D3D10_BUFFER_DESC ibBd;
+	ibBd.Usage=D3D10_USAGE_DEFAULT;
+	ibBd.ByteWidth=sizeof(DWORD)*3;
+	ibBd.BindFlags=D3D10_BIND_INDEX_BUFFER;
+	ibBd.CPUAccessFlags=0;
+	ibBd.MiscFlags=0;
+
+	DWORD indices[]={0,1,2};
+	D3D10_SUBRESOURCE_DATA IndexBufferInitData;
+    //A pointer to the initial data
+    IndexBufferInitData.pSysMem = indices;
+
+	if (FAILED(m_pD3D10Device->CreateBuffer(&ibBd,&IndexBufferInitData,&m_pIndexBuffer)))
+		return false;
+
+	m_pD3D10Device->IASetIndexBuffer(m_pIndexBuffer,DXGI_FORMAT_R32_UINT,0);
+
     // Set primitive topology, how are we going to interpet the vertices in the vertex buffer - BMD
     //http://msdn.microsoft.com/en-us/library/bb173590%28v=VS.85%29.aspx - BMD
     m_pD3D10Device->IASetPrimitiveTopology( D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST );	
@@ -236,8 +259,10 @@ void CGameApplication::render()
 		//Get a pass at current index and apply it -BMD
         m_pTechnique->GetPassByIndex( p )->Apply( 0 );
 		//Draw call
-        m_pD3D10Device->Draw( 3, //Number of vertices
-        0 );// Start Location in the vertex buffer
+        //m_pD3D10Device->Draw( 3, //Number of vertices
+        //0 );// Start Location in the vertex buffer
+
+		m_pD3D10Device->DrawIndexed(3,0,0);
     }
 	//Swaps the buffers in the chain, the back buffer to the front(screen)
 	//http://msdn.microsoft.com/en-us/library/bb174576%28v=vs.85%29.aspx - BMD
