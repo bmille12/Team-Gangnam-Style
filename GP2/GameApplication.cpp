@@ -72,6 +72,7 @@ bool CGameApplication::initGame()
     // the release configuration of this program. - BMD
     dwShaderFlags |= D3D10_SHADER_DEBUG;
 #endif
+	ID3D10Blob * pErrorBuffer=NULL;
 	//Create the effect - BMD
 	//http://msdn.microsoft.com/en-us/library/bb172658%28v=vs.85%29.aspx -BMD
 	if( FAILED(D3DX10CreateEffectFromFile( TEXT("Transform.fx"), //The filename of the effect - BMD
@@ -84,13 +85,13 @@ bool CGameApplication::initGame()
 		NULL, //ID3D10EffectPool*, a pointer to an effect pool allows sharing of variables between effects - BMD
 		NULL, //ID3DX10ThreadPump*, a pointer to a thread pump this allows multithread access to shader resource - BMD
 		&m_pEffect, //ID3D10Effect**, a pointer to a memory address of the effect object. This will be initialised after this - BMD
-		NULL, //ID3D10Blob**, a pointer to a memory address of a blob object, this can be used to hold errors from the compilation - BMD
+		&pErrorBuffer, //ID3D10Blob**, a pointer to a memory address of a blob object, this can be used to hold errors from the compilation - BMD
 		NULL )))//HRESULT*, a pointer to a the result of the compilation, this will be NULL - BMD
 	{
 		//If the creation of the Effect fails then a message box will be shown
-        MessageBox( NULL,
-                    TEXT("The FX file cannot be located.  Please run this executable from the directory that contains the FX file."), 
-					TEXT("Error"), 
+        MessageBoxA( NULL,
+					(char*)pErrorBuffer->GetBufferPointer(), 
+					"Error", 
 					MB_OK );
         return false;
     }
@@ -133,9 +134,17 @@ bool CGameApplication::initGame()
     // Some vertices - BMD
     Vertex vertices[] =
     {
-        D3DXVECTOR3( 0.0f, 0.5f, 0.0f ),
-        D3DXVECTOR3( 0.5f, -0.5f, 0.0f ),
-        D3DXVECTOR3( -0.5f, -0.5f, 0.0f ),
+		//front
+        D3DXVECTOR3( -0.5f, 0.5f, 0.5f ), //0 top left 
+        D3DXVECTOR3( 0.5f, -0.5f, 0.5f ),//1 bottom right 
+        D3DXVECTOR3( -0.5f, -0.5f, 0.5f ), //2 bottom left
+		D3DXVECTOR3( 0.5f, 0.5f, 0.5f ), //3 top right
+
+		//back
+        D3DXVECTOR3( -0.5f, 0.5f, -0.5f ), //4 top left
+        D3DXVECTOR3( 0.5f, -0.5f, -0.5f ),//5 bottom right
+        D3DXVECTOR3( -0.5f, -0.5f, -0.5f ), //6 bottom left
+		D3DXVECTOR3( 0.5f, 0.5f, -0.5f ), //7 top right
     };
     
     //The description of the Buffer, this is a common pattern you will see when
@@ -144,7 +153,7 @@ bool CGameApplication::initGame()
     //http://msdn.microsoft.com/en-us/library/bb204896%28VS.85%29.aspx - BMD
     D3D10_BUFFER_DESC bd;
     bd.Usage = D3D10_USAGE_DEFAULT;//Usuage flag,this describes how the buffer is read/written to. Default is the most common - BMD
-    bd.ByteWidth = sizeof( Vertex ) * 3;//The size of the buffer, this is the size of one vertex * by the num of vertices -BMD
+    bd.ByteWidth = sizeof( Vertex ) * 8;//The size of the buffer, this is the size of one vertex * by the num of vertices -BMD
     bd.BindFlags = D3D10_BIND_VERTEX_BUFFER;//BindFlags, says how the buffer is going to be used. In this case as a Vertex Buffer - BMD
     bd.CPUAccessFlags = 0;//CPUAccessFlag, sepcfies if the CPU can access the resource. 0 means no CPU access - BMD
     bd.MiscFlags = 0;//MiscCreation flags, this will be zero most of the time - BMD
@@ -179,12 +188,18 @@ bool CGameApplication::initGame()
 
 	D3D10_BUFFER_DESC ibBd;
 	ibBd.Usage=D3D10_USAGE_DEFAULT;
-	ibBd.ByteWidth=sizeof(DWORD)*3;
+	ibBd.ByteWidth=sizeof(DWORD)*36;
 	ibBd.BindFlags=D3D10_BIND_INDEX_BUFFER;
 	ibBd.CPUAccessFlags=0;
 	ibBd.MiscFlags=0;
 
-	DWORD indices[]={0,1,2};
+	DWORD indices[]={0,1,2,0,3,1,//front
+					4,5,6,4,7,5, //back
+					0,6,4,0,2,6, //left
+					3,5,7,3,1,5, //right
+					0,4,3,0,3,7, //top
+					2,6,1,6,5,1	 //bottom
+					};
 	D3D10_SUBRESOURCE_DATA IndexBufferInitData;
     //A pointer to the initial data
     IndexBufferInitData.pSysMem = indices;
@@ -262,7 +277,7 @@ void CGameApplication::render()
         //m_pD3D10Device->Draw( 3, //Number of vertices
         //0 );// Start Location in the vertex buffer
 
-		m_pD3D10Device->DrawIndexed(3,0,0);
+		m_pD3D10Device->DrawIndexed(36,0,0);
     }
 	//Swaps the buffers in the chain, the back buffer to the front(screen)
 	//http://msdn.microsoft.com/en-us/library/bb174576%28v=vs.85%29.aspx - BMD
@@ -275,7 +290,7 @@ void CGameApplication::update()
 	static float elapsedTime;
 	elapsedTime+=m_Timer.getElapsedTime();
 
-	D3DXMatrixRotationY(&m_matWorld,elapsedTime);
+	D3DXMatrixRotationYawPitchRoll(&m_matWorld,elapsedTime,elapsedTime,elapsedTime);
 	//D3DXMatrixTranslation(&m_matWorld,1.0f,0.0f,0.0f);
 }
 
