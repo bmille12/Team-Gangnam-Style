@@ -11,6 +11,11 @@ public:
 		m_vecPosition=D3DXVECTOR3(0.0f,0.0f,0.0f);
 		m_vecRotation=D3DXVECTOR3(0.0f,0.0f,0.0f);
 		m_vecScale=D3DXVECTOR3(1.0f,1.0f,1.0f);
+		D3DXMatrixIdentity(&m_matTranslate);
+		D3DXMatrixIdentity(&m_matRotation);
+		D3DXMatrixIdentity(&m_matScale);
+		D3DXMatrixIdentity(&m_matWorld);
+		D3DXQuaternionIdentity(&m_quatRotation);
 	};
 	virtual ~CTransformComponent(){};
 

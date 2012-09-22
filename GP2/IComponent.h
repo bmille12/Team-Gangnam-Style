@@ -22,6 +22,9 @@ public:
 
 	virtual void setParent(CGameObject *pParent)=0;
 
+	virtual void enable()=0;
+	virtual void disable()=0;
+
 };
 
 class CBaseComponent:public IComponent
@@ -30,6 +33,7 @@ public:
 	CBaseComponent()
 	{
 		m_pParent=NULL;
+		m_bIsEnabled=true;
 	};
 
 	virtual ~CBaseComponent(){};
@@ -60,6 +64,17 @@ public:
 	{
 		m_pParent=pParent;
 	};
+
+	void enable()
+	{
+		m_bIsEnabled=true;
+	};
+	
+	void disable()
+	{
+		m_bIsEnabled=false;
+	};
 protected:
 	CGameObject *m_pParent;
+	bool m_bIsEnabled;
 };

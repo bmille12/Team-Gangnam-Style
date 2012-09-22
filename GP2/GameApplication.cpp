@@ -262,7 +262,7 @@ void CGameApplication::render()
 	m_pD3D10Device->ClearDepthStencilView(m_pDepthStencelView,D3D10_CLEAR_DEPTH,1.0f,0);
 	//All drawing will occur between the clear and present - BMD
 
-	m_pWorldMatrixVariable->SetMatrix((float*)m_matWorld);
+		m_pWorldMatrixVariable->SetMatrix((float*)m_matWorld);
 	 
 	//Get the Description of the technique, we need this in order to
 	//loop through each pass in the technique - BMD
