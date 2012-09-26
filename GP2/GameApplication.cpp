@@ -1,23 +1,13 @@
 #include "GameApplication.h"
 
-struct Vertex
-{
-    D3DXVECTOR3 Pos;
-};
-
 CGameApplication::CGameApplication(void)
 {
 	m_pWindow=NULL;
 	m_pD3D10Device=NULL;
 	m_pRenderTargetView=NULL;
 	m_pSwapChain=NULL;
-	m_pEffect=NULL;
-	m_pTechnique=NULL;
 	m_pDepthStencelView=NULL;
 	m_pDepthStencilTexture=NULL;
-	m_pIndexBuffer=NULL;
-	m_pVertexBuffer=NULL;
-	m_pVertexLayout=NULL;
 }
 
 CGameApplication::~CGameApplication(void)
@@ -25,14 +15,19 @@ CGameApplication::~CGameApplication(void)
 	if (m_pD3D10Device)
 		m_pD3D10Device->ClearState();
 
-	if (m_pVertexBuffer)
-		m_pVertexBuffer->Release();
-	if (m_pIndexBuffer)
-		m_pIndexBuffer->Release();
-	if (m_pVertexLayout)
-		m_pVertexLayout->Release();
-	if (m_pEffect)
-		m_pEffect->Release();
+	m_DisplayListIter=m_DisplayList.begin();
+	while(m_DisplayListIter!=m_DisplayList.end())
+	{
+		if ((*m_DisplayListIter))
+		{
+			delete (*m_DisplayListIter);
+			m_DisplayListIter=m_DisplayList.erase(m_DisplayListIter);
+		}
+		else
+		{
+			m_DisplayListIter++;
+		}
+	}
 	if (m_pRenderTargetView)
 		m_pRenderTargetView->Release();
 	if (m_pDepthStencelView)
@@ -63,73 +58,32 @@ bool CGameApplication::init()
 
 bool CGameApplication::initGame()
 {
-	//Set the shader flags - BMD
-    DWORD dwShaderFlags = D3D10_SHADER_ENABLE_STRICTNESS;
-#if defined( DEBUG ) || defined( _DEBUG )
-    // Set the D3D10_SHADER_DEBUG flag to embed debug information in the shaders.
-    // Setting this flag improves the shader debugging experience, but still allows 
-    // the shaders to be optimized and to run exactly the way they will run in 
-    // the release configuration of this program. - BMD
-    dwShaderFlags |= D3D10_SHADER_DEBUG;
-#endif
-	ID3D10Blob * pErrorBuffer=NULL;
-	//Create the effect - BMD
-	//http://msdn.microsoft.com/en-us/library/bb172658%28v=vs.85%29.aspx -BMD
-	if( FAILED(D3DX10CreateEffectFromFile( TEXT("Transform.fx"), //The filename of the effect - BMD
-		NULL, //An array of shader macros we leave this NULL - BMD
-		NULL, //ID3D10Include*, this allows to include other files when we are compiling the effect - BMD
-		"fx_4_0", //A string which specfies the effect profile to use, in this case fx_4_0(Shader model 4) - BMD
-		dwShaderFlags, //Shader flags, this can be used to add extra debug information to the shader - BMD
-		0,//Fx flags, effect compile flags set to zero - BMD
-        m_pD3D10Device, //ID3D10Device*, the direct3D rendering device - BMD
-		NULL, //ID3D10EffectPool*, a pointer to an effect pool allows sharing of variables between effects - BMD
-		NULL, //ID3DX10ThreadPump*, a pointer to a thread pump this allows multithread access to shader resource - BMD
-		&m_pEffect, //ID3D10Effect**, a pointer to a memory address of the effect object. This will be initialised after this - BMD
-		&pErrorBuffer, //ID3D10Blob**, a pointer to a memory address of a blob object, this can be used to hold errors from the compilation - BMD
-		NULL )))//HRESULT*, a pointer to a the result of the compilation, this will be NULL - BMD
-	{
-		//If the creation of the Effect fails then a message box will be shown
-        MessageBoxA( NULL,
-					(char*)pErrorBuffer->GetBufferPointer(), 
-					"Error", 
-					MB_OK );
-        return false;
-    }
+    // Set primitive topology, how are we going to interpet the vertices in the vertex buffer - BMD
+    //http://msdn.microsoft.com/en-us/library/bb173590%28v=VS.85%29.aspx - BMD
+    m_pD3D10Device->IASetPrimitiveTopology( D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST );	
 
-	//Get the technique called Render from the effect, we need this for rendering later on - BMD
-	//A technique is a way of drawing, a technique can have many passes
-	//http://msdn.microsoft.com/en-us/library/bb173708%28v=vs.85%29.aspx
-	m_pTechnique=m_pEffect->GetTechniqueByName("Render");
+	D3DXVECTOR3 cameraPos(0.0f,0.0f,-10.0f);
+	D3DXVECTOR3 cameraLook(0.0f,0.0f,0.0f);
+	D3DXVECTOR3 cameraUp(0.0f,1.0f,0.0f);
+	D3DXMatrixLookAtLH(&m_matView,&cameraPos,&cameraLook,&cameraUp);
 
-    // Define the input layout of the vertex, this is so we can bind a vertex to the pipeline - BMD
-    D3D10_INPUT_ELEMENT_DESC layout[] =
-    {
-		
-        { "POSITION", //Name of the semantic, this helps to bind the vertex inside the Vertex Shader - BMD
-		0, //The index of the semantic, see above - BMD
-		DXGI_FORMAT_R32G32B32_FLOAT, //The format of the element, in this case 32 bits of each sub element - BMD
-		0, //Input slot - BMD
-		0, //Offset, this will increase as we add more elements(such texture coords) to the layout - BMD
-		D3D10_INPUT_PER_VERTEX_DATA, //Input classification - BMD
-		0 }, //Instance Data slot - BMD
-    };
-	//Number of elements in the layout - BMD
-    UINT numElements = sizeof( layout ) / sizeof(D3D10_INPUT_ELEMENT_DESC);
-	//Get the Pass description, we need this to bind the vertex to the pipeline - BMD
-    D3D10_PASS_DESC PassDesc;
-    m_pTechnique->GetPassByIndex( 0 )->GetDesc( &PassDesc );
-	//Create Input layout to describe the incoming buffer to the input assembler - BMD
-    if (FAILED(m_pD3D10Device->CreateInputLayout( layout, //The layout describing our vertices - BMD
-		numElements, //The number of elements in the layout
-		PassDesc.pIAInputSignature,//Input signature of the description of the pass - BMD
-        PassDesc.IAInputSignatureSize, //The size of this Signature size of the pass - BMD
-		&m_pVertexLayout ))) //The pointer to an address of Vertex Layout - BMD
-	{
-		return false;
-	}
+	D3D10_VIEWPORT vp;
+	UINT numViewports=1;
+	m_pD3D10Device->RSGetViewports(&numViewports,&vp);
 
-    // Set the input layout for the Input Assembler- BMD
-    m_pD3D10Device->IASetInputLayout( m_pVertexLayout );
+	D3DXMatrixPerspectiveFovLH(&m_matProjection,(float)D3DX_PI*0.25f,vp.Width/(FLOAT)vp.Height,0.1f,1000.0f);
+
+
+	CGameObject *pTestGameObject=new CGameObject();
+	
+	//create material
+	CMaterialComponent *pMaterial=new CMaterialComponent();
+	pMaterial->SetRenderingDevice(m_pD3D10Device);
+	pMaterial->setEffectFilename("Transform.fx");
+	
+	CGeometryComponent *pGeometry=new CGeometryComponent();
+	pGeometry->SetRenderingDevice(m_pD3D10Device);
+	
 
     // Some vertices - BMD
     Vertex vertices[] =
@@ -146,94 +100,35 @@ bool CGameApplication::initGame()
         D3DXVECTOR3( -0.5f, -0.5f, -0.5f ), //6 bottom left
 		D3DXVECTOR3( 0.5f, 0.5f, -0.5f ), //7 top right
     };
-    
-    //The description of the Buffer, this is a common pattern you will see when
-    //creating memory buffer in D3D10, this is an example of how to create a
-    //Vertex memory buffer - BMD
-    //http://msdn.microsoft.com/en-us/library/bb204896%28VS.85%29.aspx - BMD
-    D3D10_BUFFER_DESC bd;
-    bd.Usage = D3D10_USAGE_DEFAULT;//Usuage flag,this describes how the buffer is read/written to. Default is the most common - BMD
-    bd.ByteWidth = sizeof( Vertex ) * 8;//The size of the buffer, this is the size of one vertex * by the num of vertices -BMD
-    bd.BindFlags = D3D10_BIND_VERTEX_BUFFER;//BindFlags, says how the buffer is going to be used. In this case as a Vertex Buffer - BMD
-    bd.CPUAccessFlags = 0;//CPUAccessFlag, sepcfies if the CPU can access the resource. 0 means no CPU access - BMD
-    bd.MiscFlags = 0;//MiscCreation flags, this will be zero most of the time - BMD
-    
-    //This is used to supply the initial data for the buffer - BMD
-    //http://msdn.microsoft.com/en-us/library/bb172456%28VS.85%29.aspx - BMD
-    D3D10_SUBRESOURCE_DATA InitData;
-    //A pointer to the initial data
-    InitData.pSysMem = vertices;
-    
-    //Create the Buffer using the buffer description and initial data - BMD
-    //http://msdn.microsoft.com/en-us/library/bb173544%28v=VS.85%29.aspx - BMD
-    if (FAILED(m_pD3D10Device->CreateBuffer( 
-		&bd, //Memory address of a buffer description - BMD
-		&InitData, //Memory address of the initial data - BMD
-		&m_pVertexBuffer )))//A pointer to a memory address of a buffer, this will be initialise after - BMD
-		return false;
+	
+	for(int i=0;i<8;i++)
+	{
+		pGeometry->addVertex(vertices[i]);
+	}
 
-    //Get the stride(size) of the a vertex, we need this to tell the pipeline the size of one vertex - BMD
-    UINT stride = sizeof( Vertex );
-    //The offset from start of the buffer to where our vertices are located - BMD
-    UINT offset = 0;
-    //Bind the vertex buffer to input assembler stage - BMD
-    //http://msdn.microsoft.com/en-us/library/bb173591%28v=VS.85%29.aspx - BMD
-    m_pD3D10Device->IASetVertexBuffers( 
-		0, //The input slot to bind, zero indicates the first slot - BMD
-		1, //The number of buffers - BMD
-		&m_pVertexBuffer, //A pointer to an array of vertex buffers - BMD
-		&stride, //Pointer to an array of strides of vertices in the buffer - BMD
-		&offset );//Pointer to an array of offsets to the vertices in the vertex buffers - BMD
-
-
-	D3D10_BUFFER_DESC ibBd;
-	ibBd.Usage=D3D10_USAGE_DEFAULT;
-	ibBd.ByteWidth=sizeof(DWORD)*36;
-	ibBd.BindFlags=D3D10_BIND_INDEX_BUFFER;
-	ibBd.CPUAccessFlags=0;
-	ibBd.MiscFlags=0;
-
-	DWORD indices[]={0,1,2,0,3,1,//front
+	int indices[]={0,1,2,0,3,1,//front
 					4,5,6,4,7,5, //back
 					0,6,4,0,2,6, //left
 					3,5,7,3,1,5, //right
 					0,4,3,0,3,7, //top
 					2,6,1,6,5,1	 //bottom
 					};
-	D3D10_SUBRESOURCE_DATA IndexBufferInitData;
-    //A pointer to the initial data
-    IndexBufferInitData.pSysMem = indices;
+	for(int i=0;i<36;i++)
+	{
+		pGeometry->addIndex(indices[i]);
+	}
 
-	if (FAILED(m_pD3D10Device->CreateBuffer(&ibBd,&IndexBufferInitData,&m_pIndexBuffer)))
-		return false;
 
-	m_pD3D10Device->IASetIndexBuffer(m_pIndexBuffer,DXGI_FORMAT_R32_UINT,0);
 
-    // Set primitive topology, how are we going to interpet the vertices in the vertex buffer - BMD
-    //http://msdn.microsoft.com/en-us/library/bb173590%28v=VS.85%29.aspx - BMD
-    m_pD3D10Device->IASetPrimitiveTopology( D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST );	
+	pTestGameObject->addComponent(pMaterial);
+	pTestGameObject->addComponent(pGeometry);
 
-	D3DXVECTOR3 cameraPos(0.0f,0.0f,-10.0f);
-	D3DXVECTOR3 cameraLook(0.0f,0.0f,0.0f);
-	D3DXVECTOR3 cameraUp(0.0f,1.0f,0.0f);
-	D3DXMatrixLookAtLH(&m_matView,&cameraPos,&cameraLook,&cameraUp);
+	m_DisplayList.push_back(pTestGameObject);
 
-	D3D10_VIEWPORT vp;
-	UINT numViewports=1;
-	m_pD3D10Device->RSGetViewports(&numViewports,&vp);
-
-	D3DXMatrixPerspectiveFovLH(&m_matProjection,(float)D3DX_PI*0.25f,vp.Width/(FLOAT)vp.Height,0.1f,1000.0f);
-
-	D3DXMatrixIdentity(&m_matWorld);
-
-	m_pViewMatrixVariable=m_pEffect->GetVariableByName("matView")->AsMatrix();
-	m_pViewMatrixVariable->SetMatrix((float*)m_matView);
-
-	m_pProjectionMatrixVariable=m_pEffect->GetVariableByName("matProjection")->AsMatrix();
-	m_pProjectionMatrixVariable->SetMatrix((float*)m_matProjection);
-
-	m_pWorldMatrixVariable=m_pEffect->GetVariableByName("matWorld")->AsMatrix();
-	m_pWorldMatrixVariable->SetMatrix((float*)m_matWorld);
+	for(m_DisplayListIter=m_DisplayList.begin();m_DisplayListIter!=m_DisplayList.end();m_DisplayListIter++)
+	{
+		(*m_DisplayListIter)->init();
+	}
 
 	m_Timer.start();
 	return true;
@@ -260,25 +155,34 @@ void CGameApplication::render()
 	//http://msdn.microsoft.com/en-us/library/bb173539%28v=vs.85%29.aspx - BMD
     m_pD3D10Device->ClearRenderTargetView( m_pRenderTargetView, ClearColor );
 	m_pD3D10Device->ClearDepthStencilView(m_pDepthStencelView,D3D10_CLEAR_DEPTH,1.0f,0);
-	//All drawing will occur between the clear and present - BMD
+	for(m_DisplayListIter=m_DisplayList.begin();m_DisplayListIter!=m_DisplayList.end();m_DisplayListIter++)
+	{
+		CTransformComponent *pTransform=(*m_DisplayListIter)->getTransform();
+		CGeometryComponent *pGeometry=static_cast<CGeometryComponent*>((*m_DisplayListIter)->getComponent("GeometryComponent"));
+		CMaterialComponent *pMaterial=static_cast<CMaterialComponent*>((*m_DisplayListIter)->getComponent("MaterialComponent"));
 
-		m_pWorldMatrixVariable->SetMatrix((float*)m_matWorld);
-	 
-	//Get the Description of the technique, we need this in order to
-	//loop through each pass in the technique - BMD
-    D3D10_TECHNIQUE_DESC techDesc;
-    m_pTechnique->GetDesc( &techDesc );
-	//Loop through the passes in the technique - BMD
-    for( UINT p = 0; p < techDesc.Passes; ++p )
-    {
-		//Get a pass at current index and apply it -BMD
-        m_pTechnique->GetPassByIndex( p )->Apply( 0 );
-		//Draw call
-        //m_pD3D10Device->Draw( 3, //Number of vertices
-        //0 );// Start Location in the vertex buffer
+		if (pGeometry)
+		{
+			pGeometry->bindBuffers();
+		}
+		if (pMaterial)
+		{
+			pMaterial->setProjectionMatrix((float*)m_matProjection);
+			pMaterial->setViewMatrix((float*)m_matView);
+			pMaterial->setWorldMatrix((float*)pTransform->getWorld());
+			pMaterial->bindVertexLayout();
 
-		m_pD3D10Device->DrawIndexed(36,0,0);
-    }
+			for (UINT i=0;i<pMaterial->getNumberOfPasses();i++)
+			{
+				pMaterial->applyPass(i);
+				if (pGeometry)
+				{
+					m_pD3D10Device->DrawIndexed(pGeometry->getNumberOfIndices(),0,0);
+				}
+			}
+		}
+
+	}
 	//Swaps the buffers in the chain, the back buffer to the front(screen)
 	//http://msdn.microsoft.com/en-us/library/bb174576%28v=vs.85%29.aspx - BMD
     m_pSwapChain->Present( 0, 0 );
@@ -287,11 +191,10 @@ void CGameApplication::render()
 void CGameApplication::update()
 {
 	m_Timer.update();
-	static float elapsedTime;
-	elapsedTime+=m_Timer.getElapsedTime();
-
-	D3DXMatrixRotationYawPitchRoll(&m_matWorld,elapsedTime,elapsedTime,elapsedTime);
-	//D3DXMatrixTranslation(&m_matWorld,1.0f,0.0f,0.0f);
+	for(m_DisplayListIter=m_DisplayList.begin();m_DisplayListIter!=m_DisplayList.end();m_DisplayListIter++)
+	{
+		(*m_DisplayListIter)->update(m_Timer.getElapsedTime());
+	}
 }
 
 //initGraphics - initialise the graphics subsystem - BMD

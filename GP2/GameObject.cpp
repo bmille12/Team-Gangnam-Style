@@ -28,6 +28,8 @@ CGameObject::~CGameObject()
 			iter++;
 		}
 	}
+
+	m_ComponentMap.clear();
 }
 
 void CGameObject::addComponent(IComponent * pComponent)
@@ -36,3 +38,28 @@ void CGameObject::addComponent(IComponent * pComponent)
 		m_ComponentMap[pComponent->getName()]=pComponent;
 		pComponent->setParent(this);
 };
+
+
+void CGameObject::init()
+{
+	for (vector<IComponent*>::iterator iter=m_Components.begin();iter!=m_Components.end();iter++)
+	{
+		(*iter)->init();
+	}
+}
+
+void CGameObject::render()
+{
+	for (vector<IComponent*>::iterator iter=m_Components.begin();iter!=m_Components.end();iter++)
+	{
+		(*iter)->render();
+	}
+}
+
+void CGameObject::update(float elapsedTime)
+{
+	for (vector<IComponent*>::iterator iter=m_Components.begin();iter!=m_Components.end();iter++)
+	{
+		(*iter)->update(elapsedTime);
+	}
+}

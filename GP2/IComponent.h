@@ -34,13 +34,14 @@ public:
 	{
 		m_pParent=NULL;
 		m_bIsEnabled=true;
+		m_strName="BaseComponent";
 	};
 
 	virtual ~CBaseComponent(){};
 
 	virtual const string& getName()
 	{
-		return "BaseComponent";
+		return m_strName;
 	};
 
 	virtual void update(float elapsedTime)
@@ -77,4 +78,5 @@ public:
 protected:
 	CGameObject *m_pParent;
 	bool m_bIsEnabled;
+	string m_strName;
 };

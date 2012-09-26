@@ -6,6 +6,7 @@ CTimer::CTimer()
 	m_CurrentTime=0;
 	m_bUseHighPrecision=false;
 	m_fElapsedTime=0.0f;
+	m_fTotalTime=0.0f;
 }
 
 CTimer::~CTimer()
@@ -26,6 +27,12 @@ void CTimer::start()
 	}
 }
 
+void CTimer::reset()
+{
+	m_fElapsedTime=0.0f;
+	m_fTotalTime=0.0f;
+}
+
 void CTimer::update()
 {
 	if (m_bUseHighPrecision)
@@ -33,6 +40,7 @@ void CTimer::update()
 		QueryPerformanceCounter((LARGE_INTEGER*)&m_CurrentTime);
 		m_fElapsedTime=(float)((m_CurrentTime-m_LastTime))*1.0f/(float)m_Frequency;
 		m_LastTime=m_CurrentTime;
+		m_fTotalTime+=m_fElapsedTime;
 	}
 	else
 	{
@@ -43,4 +51,9 @@ void CTimer::update()
 float CTimer::getElapsedTime()
 {
 	return m_fElapsedTime;
+}
+
+float CTimer::getTotalTime()
+{
+	return m_fTotalTime;
 }

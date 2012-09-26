@@ -14,29 +14,26 @@ public:
 	CGameObject();
 	~CGameObject();
 
-	const CTransformComponent * getTransform()
+	CTransformComponent * getTransform()
 	{
 		return m_pTransform;
 	};
 
 
-	const IComponent* getComponent(const string &name)
+	IComponent* getComponent(const string &name)
 	{
 		return m_ComponentMap[name];
 	};
 
 	void addComponent(IComponent * pComponent);
 
-	void addChild(CGameObject *pChild)
-	{
-		m_Children.push_back(pChild);
-		pChild->m_pParent=this;
-	};
+	void init();
+	void render();
+	void update(float elapsedTime);
 private:
 	CTransformComponent * m_pTransform;
 	map<string,IComponent*> m_ComponentMap;
 	vector<IComponent*> m_Components;
-	vector<CGameObject*> m_Children;
 
 	CGameObject *m_pParent;
 };

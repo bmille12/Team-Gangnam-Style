@@ -16,17 +16,13 @@ public:
 		D3DXMatrixIdentity(&m_matScale);
 		D3DXMatrixIdentity(&m_matWorld);
 		D3DXQuaternionIdentity(&m_quatRotation);
+		m_strName="TransformComponent";
 	};
 	virtual ~CTransformComponent(){};
 
-	const string& getName()
-	{
-		return "Transform";
-	};
-
 	void update(float elapsedTime)
 	{
-		D3DXQuaternionRotationYawPitchRoll(&m_quatRotation,m_vecRotation.y,m_vecRotation.x,m_vecRotation.z);
+		D3DXQuaternionRotationYawPitchRoll(&m_quatRotation,m_vecRotation.x,m_vecRotation.y,m_vecRotation.z);
 		D3DXMatrixRotationQuaternion(&m_matRotation,&m_quatRotation);
 
 		D3DXMatrixTranslation(&m_matTranslate,m_vecRotation.x,m_vecRotation.y,m_vecRotation.z);
@@ -59,7 +55,7 @@ public:
 		m_vecScale=D3DXVECTOR3(x,y,z);
 	};
 
-	const D3DXMATRIX& getWorld()
+	D3DXMATRIX& getWorld()
 	{
 		return m_matWorld;
 	};
