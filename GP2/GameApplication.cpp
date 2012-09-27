@@ -1,6 +1,8 @@
 #include "GameApplication.h"
 #include "GameObject.h"
 
+#include "ModelLoader.h"
+
 CGameApplication::CGameApplication(void)
 {
 	m_pWindow=NULL;
@@ -79,10 +81,11 @@ bool CGameApplication::initGame()
 	pMaterial->setEffectFilename("Transform.fx");
 	
 	//Create geometry
-	CGeometryComponent *pGeometry=new CGeometryComponent();
+	CModelLoader modelloader;
+	CGeometryComponent *pGeometry=modelloader.loadModelFromFile(m_pD3D10Device,"humanoid.fbx");
 	pGeometry->SetRenderingDevice(m_pD3D10Device);
 	
-
+	/*
     // Some vertices - BMD
     Vertex vertices[] =
     {
@@ -118,6 +121,7 @@ bool CGameApplication::initGame()
 	{
 		pGeometry->addIndex(indices[i]);
 	}
+	*/
 	//Add component
 	pTestGameObject->addComponent(pMaterial);
 	pTestGameObject->addComponent(pGeometry);
