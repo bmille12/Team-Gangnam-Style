@@ -1,5 +1,6 @@
 #include "GameApplication.h"
 
+#include "GameObject.h"
 CGameApplication::CGameApplication(void)
 {
 	m_pWindow=NULL;
@@ -8,13 +9,19 @@ CGameApplication::CGameApplication(void)
 	m_pSwapChain=NULL;
 	m_pDepthStencelView=NULL;
 	m_pDepthStencilTexture=NULL;
+	m_pGameObjectManager=new CGameObjectManager();
 }
 
 CGameApplication::~CGameApplication(void)
 {
 	if (m_pD3D10Device)
 		m_pD3D10Device->ClearState();
-
+	if (m_pGameObjectManager)
+	{
+		delete m_pGameObjectManager;
+		m_pGameObjectManager=NULL;
+	}
+	/*
 	m_DisplayListIter=m_DisplayList.begin();
 	while(m_DisplayListIter!=m_DisplayList.end())
 	{
@@ -27,7 +34,7 @@ CGameApplication::~CGameApplication(void)
 		{
 			m_DisplayListIter++;
 		}
-	}
+	}*/
 	if (m_pRenderTargetView)
 		m_pRenderTargetView->Release();
 	if (m_pDepthStencelView)
@@ -75,6 +82,7 @@ bool CGameApplication::initGame()
 
 
 	CGameObject *pTestGameObject=new CGameObject();
+	pTestGameObject->setName("Test");
 	
 	//create material
 	CMaterialComponent *pMaterial=new CMaterialComponent();
@@ -122,14 +130,9 @@ bool CGameApplication::initGame()
 
 	pTestGameObject->addComponent(pMaterial);
 	pTestGameObject->addComponent(pGeometry);
-
-	m_DisplayList.push_back(pTestGameObject);
-
-	for(m_DisplayListIter=m_DisplayList.begin();m_DisplayListIter!=m_DisplayList.end();m_DisplayListIter++)
-	{
-		(*m_DisplayListIter)->init();
-	}
-
+	m_pGameObjectManager->addGameObject(pTestGameObject);
+	
+	m_pGameObjectManager->init();
 	m_Timer.start();
 	return true;
 }
@@ -155,11 +158,11 @@ void CGameApplication::render()
 	//http://msdn.microsoft.com/en-us/library/bb173539%28v=vs.85%29.aspx - BMD
     m_pD3D10Device->ClearRenderTargetView( m_pRenderTargetView, ClearColor );
 	m_pD3D10Device->ClearDepthStencilView(m_pDepthStencelView,D3D10_CLEAR_DEPTH,1.0f,0);
-	for(m_DisplayListIter=m_DisplayList.begin();m_DisplayListIter!=m_DisplayList.end();m_DisplayListIter++)
+	for(vector<CGameObject*>::iterator iter=m_pGameObjectManager->getBegining();iter!=m_pGameObjectManager->getEnd();iter++)
 	{
-		CTransformComponent *pTransform=(*m_DisplayListIter)->getTransform();
-		CGeometryComponent *pGeometry=static_cast<CGeometryComponent*>((*m_DisplayListIter)->getComponent("GeometryComponent"));
-		CMaterialComponent *pMaterial=static_cast<CMaterialComponent*>((*m_DisplayListIter)->getComponent("MaterialComponent"));
+		CTransformComponent *pTransform=(*iter)->getTransform();
+		CGeometryComponent *pGeometry=static_cast<CGeometryComponent*>((*iter)->getComponent("GeometryComponent"));
+		CMaterialComponent *pMaterial=static_cast<CMaterialComponent*>((*iter)->getComponent("MaterialComponent"));
 
 		if (pGeometry)
 		{
@@ -191,10 +194,10 @@ void CGameApplication::render()
 void CGameApplication::update()
 {
 	m_Timer.update();
-	for(m_DisplayListIter=m_DisplayList.begin();m_DisplayListIter!=m_DisplayList.end();m_DisplayListIter++)
-	{
-		(*m_DisplayListIter)->update(m_Timer.getElapsedTime());
-	}
+	m_pGameObjectManager->update(m_Timer.getElapsedTime());
+
+	CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Test")->getTransform();
+	pTransform->rotate(m_Timer.getElapsedTime(),0.0f,0.0f);
 }
 
 //initGraphics - initialise the graphics subsystem - BMD

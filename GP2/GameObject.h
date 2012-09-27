@@ -30,10 +30,18 @@ public:
 	void init();
 	void render();
 	void update(float elapsedTime);
+	void setName(const string& name)
+	{
+		m_strName=name;
+	};
+
+	const string& getName()
+	{
+		return m_strName;
+	};
 private:
 	CTransformComponent * m_pTransform;
 	map<string,IComponent*> m_ComponentMap;
 	vector<IComponent*> m_Components;
-
-	CGameObject *m_pParent;
+	string m_strName;
 };

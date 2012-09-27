@@ -4,7 +4,7 @@
 #include <D3D10.h>
 #include <D3DX10.h>
 
-#include "GameObject.h"
+#include "GameObjectManager.h"
 
 #include "MaterialComponent.h"
 #include "GeometryComponent.h"
@@ -40,6 +40,7 @@ private:
 	D3DXMATRIX m_matProjection;
 	CTimer m_Timer;
 
-	vector<CGameObject*> m_DisplayList;
-	vector<CGameObject*>::iterator m_DisplayListIter;
+	//vector<CGameObject*> m_DisplayList;
+	//vector<CGameObject*>::iterator m_DisplayListIter;
+	CGameObjectManager *m_pGameObjectManager;
 };

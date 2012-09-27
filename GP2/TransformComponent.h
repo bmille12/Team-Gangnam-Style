@@ -22,13 +22,15 @@ public:
 
 	void update(float elapsedTime)
 	{
-		D3DXQuaternionRotationYawPitchRoll(&m_quatRotation,m_vecRotation.x,m_vecRotation.y,m_vecRotation.z);
+		D3DXQuaternionRotationYawPitchRoll(&m_quatRotation,m_vecRotation.y,m_vecRotation.x,m_vecRotation.z);
 		D3DXMatrixRotationQuaternion(&m_matRotation,&m_quatRotation);
 
-		D3DXMatrixTranslation(&m_matTranslate,m_vecRotation.x,m_vecRotation.y,m_vecRotation.z);
+		D3DXMatrixTranslation(&m_matTranslate,m_vecPosition.x,m_vecPosition.y,m_vecPosition.z);
 		D3DXMatrixScaling(&m_matScale,m_vecScale.x,m_vecScale.y,m_vecScale.z);
 
-		m_matWorld=m_matScale*m_matRotation*m_matTranslate;
+		D3DXMatrixMultiply(&m_matWorld,&m_matScale,&m_matRotation);
+		D3DXMatrixMultiply(&m_matWorld,&m_matWorld,&m_matTranslate);
+		//m_matWorld=m_matScale*m_matRotation*m_matTranslate;
 	};
 
 	void render()
@@ -58,6 +60,27 @@ public:
 	D3DXMATRIX& getWorld()
 	{
 		return m_matWorld;
+	};
+
+	void rotate(float x,float y,float z)
+	{
+		m_vecRotation.x+=x;
+		m_vecRotation.y+=y;
+		m_vecRotation.z+=z;
+	};
+
+	void translate(float x,float y,float z)
+	{
+		m_vecPosition.x+=x;
+		m_vecPosition.y+=y;
+		m_vecPosition.z+=z;
+	};
+
+	void scale(float x,float y, float z)
+	{
+		m_vecScale.x+=x;
+		m_vecScale.y+=y;
+		m_vecScale.z+=z;
 	};
 private:
 	D3DXVECTOR3 m_vecPosition;
