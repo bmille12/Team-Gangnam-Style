@@ -9,6 +9,8 @@
 
 using namespace std;
 
+//Material component, represent an effect and associated 
+//information to render an object
 class CMaterialComponent:public CBaseComponent
 {
 public: 
@@ -16,69 +18,81 @@ public:
 
 	virtual ~CMaterialComponent();
 
-	void SetRenderingDevice(ID3D10Device *pDevice)
-	{
-		m_pD3D10Device=pDevice;
-	};
-
+	//set effect filename
 	void setEffectFilename(const string& name)
 	{
 		m_EffectName=name;
 	};
 
+	//set technique name we are going to grab
 	void setTechniqueName(const string& name)
 	{
 		m_TechniqueName=name;
 	};
 
+	//init, virtual so we can override later
 	virtual void init();
 
+	//load effect from file
 	void loadEffectFromFile(const string &name);
+	//load effect from memory
 	void loadEffectFromMemory(const char * pData);
+	//create vertex layout
 	void createVertexLayout();
 
+	//get number of passes
 	UINT getNumberOfPasses()
 	{
 		return m_TechniqueDesc.Passes;
 	};
 
+	//Apply the current pass, if we have a technique
 	void applyPass(UINT currentIndex)
 	{
 		m_pCurrentPass=m_pTechnique->GetPassByIndex(currentIndex);
 		m_pCurrentPass->Apply(0);
 	};
 
+	//set the world matrix
 	void setWorldMatrix(float * pMatrix)
 	{
 		m_pWorldMatrixVariable->SetMatrix(pMatrix);
 	};
 
+	//set projection matrix
 	void setProjectionMatrix(float * pMatrix)
 	{
 		m_pProjectionMatrixVariable->SetMatrix(pMatrix);
 	};
 
+	//set view matrix
 	void setViewMatrix(float * pMatrix)
 	{
 		m_pViewMatrixVariable->SetMatrix(pMatrix);
 	};
 
+	//bind the vertex layout
 	void bindVertexLayout()
 	{
 		m_pD3D10Device->IASetInputLayout(m_pVertexLayout);
 	};
 protected:
-	ID3D10Device * m_pD3D10Device;
+	//effect variables
 	ID3D10Effect*           m_pEffect;
 	ID3D10EffectTechnique*  m_pTechnique;
 	ID3D10EffectPass *m_pCurrentPass;
+	//input layout
 	ID3D10InputLayout*      m_pVertexLayout;
 
+	//effect name
 	string m_EffectName;
+	//technique name
 	string m_TechniqueName;
 
+	//technique desc
 	D3D10_TECHNIQUE_DESC m_TechniqueDesc;
 
+	//effect variables(constants)
 	ID3D10EffectMatrixVariable * m_pViewMatrixVariable;
 	ID3D10EffectMatrixVariable * m_pProjectionMatrixVariable;
 	ID3D10EffectMatrixVariable * m_pWorldMatrixVariable;

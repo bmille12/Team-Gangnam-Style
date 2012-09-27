@@ -1,6 +1,6 @@
 #include "GameApplication.h"
-
 #include "GameObject.h"
+
 CGameApplication::CGameApplication(void)
 {
 	m_pWindow=NULL;
@@ -16,25 +16,13 @@ CGameApplication::~CGameApplication(void)
 {
 	if (m_pD3D10Device)
 		m_pD3D10Device->ClearState();
+
 	if (m_pGameObjectManager)
 	{
 		delete m_pGameObjectManager;
 		m_pGameObjectManager=NULL;
 	}
-	/*
-	m_DisplayListIter=m_DisplayList.begin();
-	while(m_DisplayListIter!=m_DisplayList.end())
-	{
-		if ((*m_DisplayListIter))
-		{
-			delete (*m_DisplayListIter);
-			m_DisplayListIter=m_DisplayList.erase(m_DisplayListIter);
-		}
-		else
-		{
-			m_DisplayListIter++;
-		}
-	}*/
+
 	if (m_pRenderTargetView)
 		m_pRenderTargetView->Release();
 	if (m_pDepthStencelView)
@@ -80,8 +68,9 @@ bool CGameApplication::initGame()
 
 	D3DXMatrixPerspectiveFovLH(&m_matProjection,(float)D3DX_PI*0.25f,vp.Width/(FLOAT)vp.Height,0.1f,1000.0f);
 
-
+	//Create Game Object
 	CGameObject *pTestGameObject=new CGameObject();
+	//Set the name
 	pTestGameObject->setName("Test");
 	
 	//create material
@@ -89,6 +78,7 @@ bool CGameApplication::initGame()
 	pMaterial->SetRenderingDevice(m_pD3D10Device);
 	pMaterial->setEffectFilename("Transform.fx");
 	
+	//Create geometry
 	CGeometryComponent *pGeometry=new CGeometryComponent();
 	pGeometry->SetRenderingDevice(m_pD3D10Device);
 	
@@ -109,11 +99,13 @@ bool CGameApplication::initGame()
 		D3DXVECTOR3( 0.5f, 0.5f, -0.5f ), //7 top right
     };
 	
+	//add these vertices
 	for(int i=0;i<8;i++)
 	{
 		pGeometry->addVertex(vertices[i]);
 	}
 
+	//indices
 	int indices[]={0,1,2,0,3,1,//front
 					4,5,6,4,7,5, //back
 					0,6,4,0,2,6, //left
@@ -121,18 +113,19 @@ bool CGameApplication::initGame()
 					0,4,3,0,3,7, //top
 					2,6,1,6,5,1	 //bottom
 					};
+	//add these indices
 	for(int i=0;i<36;i++)
 	{
 		pGeometry->addIndex(indices[i]);
 	}
-
-
-
+	//Add component
 	pTestGameObject->addComponent(pMaterial);
 	pTestGameObject->addComponent(pGeometry);
+	//add the game object
 	m_pGameObjectManager->addGameObject(pTestGameObject);
-	
+	//init
 	m_pGameObjectManager->init();
+	
 	m_Timer.start();
 	return true;
 }
@@ -158,28 +151,40 @@ void CGameApplication::render()
 	//http://msdn.microsoft.com/en-us/library/bb173539%28v=vs.85%29.aspx - BMD
     m_pD3D10Device->ClearRenderTargetView( m_pRenderTargetView, ClearColor );
 	m_pD3D10Device->ClearDepthStencilView(m_pDepthStencelView,D3D10_CLEAR_DEPTH,1.0f,0);
+	//We need to iterate through all the Game Objects in the managers
 	for(vector<CGameObject*>::iterator iter=m_pGameObjectManager->getBegining();iter!=m_pGameObjectManager->getEnd();iter++)
 	{
+		//grab the transform
 		CTransformComponent *pTransform=(*iter)->getTransform();
+		//and the geometry
 		CGeometryComponent *pGeometry=static_cast<CGeometryComponent*>((*iter)->getComponent("GeometryComponent"));
+		//and the material
 		CMaterialComponent *pMaterial=static_cast<CMaterialComponent*>((*iter)->getComponent("MaterialComponent"));
 
+		//if we have a valid geometry
 		if (pGeometry)
 		{
+			//bind the buffer
 			pGeometry->bindBuffers();
 		}
+		//do we have a matrial
 		if (pMaterial)
 		{
+			//set the matrices
 			pMaterial->setProjectionMatrix((float*)m_matProjection);
 			pMaterial->setViewMatrix((float*)m_matView);
 			pMaterial->setWorldMatrix((float*)pTransform->getWorld());
+			//bind the vertex layout
 			pMaterial->bindVertexLayout();
-
+			//loop for the passes in the material
 			for (UINT i=0;i<pMaterial->getNumberOfPasses();i++)
 			{
+				//Apply the current pass
 				pMaterial->applyPass(i);
+				//we have a geometry
 				if (pGeometry)
 				{
+					//draw from the geometry
 					m_pD3D10Device->DrawIndexed(pGeometry->getNumberOfIndices(),0,0);
 				}
 			}

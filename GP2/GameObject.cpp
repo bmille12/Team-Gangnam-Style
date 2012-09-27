@@ -3,17 +3,18 @@
 #include "IComponent.h"
 #include "TransformComponent.h"
 
+//constructor
 CGameObject::CGameObject()
 {
-	CBaseComponent::CBaseComponent();
+	//Create transform component
 	m_pTransform=new CTransformComponent();
-	m_pTransform->setParent(this);
-	m_Components.push_back(m_pTransform);
-	m_ComponentMap[m_pTransform->getName()]=m_pTransform;
+	//attach it to the game object
+	addComponent(m_pTransform);
 }
 
 CGameObject::~CGameObject()
 {
+	//delete everything in the vector
 	vector<IComponent*>::iterator iter=m_Components.begin();
 	while(iter!=m_Components.end())
 	{
@@ -32,14 +33,19 @@ CGameObject::~CGameObject()
 	m_ComponentMap.clear();
 }
 
+//Add component
 void CGameObject::addComponent(IComponent * pComponent)
 {
-		m_Components.push_back(pComponent);
-		m_ComponentMap[pComponent->getName()]=pComponent;
-		pComponent->setParent(this);
+	//Add to the vector
+	m_Components.push_back(pComponent);
+	//Add to map
+	m_ComponentMap[pComponent->getName()]=pComponent;
+	//set the parent of the component
+	pComponent->setParent(this);
 };
 
 
+//init, cycle through the vector and call init method of the component
 void CGameObject::init()
 {
 	for (vector<IComponent*>::iterator iter=m_Components.begin();iter!=m_Components.end();iter++)
@@ -48,6 +54,7 @@ void CGameObject::init()
 	}
 }
 
+//render, cycle through each component and call render
 void CGameObject::render()
 {
 	for (vector<IComponent*>::iterator iter=m_Components.begin();iter!=m_Components.end();iter++)
@@ -56,6 +63,7 @@ void CGameObject::render()
 	}
 }
 
+//update, cycle through each compoent and call update
 void CGameObject::update(float elapsedTime)
 {
 	for (vector<IComponent*>::iterator iter=m_Components.begin();iter!=m_Components.end();iter++)

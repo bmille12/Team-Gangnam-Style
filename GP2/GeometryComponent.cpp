@@ -1,20 +1,26 @@
 #include "GeometryComponent.h"
 
+//COnstructor
 CGeometryComponent::CGeometryComponent()
 {
+	//everythign set to null
 	m_pD3D10Device=NULL;
 	m_pVertexBuffer=NULL;
 	m_pIndexBuffer=NULL;
+	//Name of the component, used to retrieve from the Game Object
 	m_strName="GeometryComponent";
 }
 
+//Deconstructor
 CGeometryComponent::~CGeometryComponent()
 {
+	//Release the vertex buffer
 	if (m_pVertexBuffer)
 	{
 		m_pVertexBuffer->Release();
 		m_pVertexBuffer=NULL;
 	}
+	//Release the index buffer
 	if (m_pIndexBuffer)
 	{
 		m_pIndexBuffer->Release();
@@ -22,26 +28,36 @@ CGeometryComponent::~CGeometryComponent()
 	}
 }
 
+//Init function, used to initialise the component
 void CGeometryComponent::init()
 {
+	//Call create vertex buffer
 	createVertexBuffer();
+	//Call create index buffer
 	createIndexBuffer();
 }
 
+//Add vertex
 void CGeometryComponent::addVertex(Vertex vert)
 {
+	//Add vertex to the vector
 	m_Vertices.push_back(vert);
 }
 
+//Add index 
 void CGeometryComponent::addIndex(int index)
 {
+	//Add index to the index buffer
 	m_Indices.push_back(index);
 }
 
+//Create vertex buffer
 void CGeometryComponent::createVertexBuffer()
 {
+	//if we have no vertices don't create the buffer
 	if (m_Vertices.size()>0)
 	{
+		//Buffer desc
 		D3D10_BUFFER_DESC bd;
 		bd.Usage = D3D10_USAGE_DEFAULT;//Usuage flag,this describes how the buffer is read/written to. Default is the most common - BMD
 		bd.ByteWidth = sizeof( Vertex ) * m_Vertices.size();//The size of the buffer, this is the size of one vertex * by the num of vertices -BMD
@@ -67,10 +83,13 @@ void CGeometryComponent::createVertexBuffer()
 	}
 }
 
+//Create index buffer
 void CGeometryComponent::createIndexBuffer()
 {
+	//if we have no indices don't create
 	if (m_Indices.size()>0)
 	{
+		//Index buffer desc
 		D3D10_BUFFER_DESC ibBd;
 		ibBd.Usage=D3D10_USAGE_DEFAULT;
 		ibBd.ByteWidth=sizeof(int)*m_Indices.size();
@@ -81,6 +100,7 @@ void CGeometryComponent::createIndexBuffer()
 		//A pointer to the initial data
 		IndexBufferInitData.pSysMem = &m_Indices.at(0);
 
+		//create the index buffer
 		if (FAILED(m_pD3D10Device->CreateBuffer(&ibBd,&IndexBufferInitData,&m_pIndexBuffer)))
 		{
 			OutputDebugStringA("Can't create index buffer");
@@ -88,6 +108,7 @@ void CGeometryComponent::createIndexBuffer()
 	}
 }
 
+//Bind the vertex buffer and index buffer
 void CGeometryComponent::bindBuffers()
 {
     //Get the stride(size) of the a vertex, we need this to tell the pipeline the size of one vertex - BMD
@@ -103,6 +124,6 @@ void CGeometryComponent::bindBuffers()
 		&stride, //Pointer to an array of strides of vertices in the buffer - BMD
 		&offset );//Pointer to an array of offsets to the vertices in the vertex buffers - BMD
 
-
+	//set index buffer
 	m_pD3D10Device->IASetIndexBuffer(m_pIndexBuffer,DXGI_FORMAT_R32_UINT,0);
 }

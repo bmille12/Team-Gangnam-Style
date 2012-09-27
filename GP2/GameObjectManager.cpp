@@ -7,25 +7,32 @@ CGameObjectManager::CGameObjectManager()
 
 CGameObjectManager::~CGameObjectManager()
 {
+	//call clear
 	clear();
 }
 
+//add game object
 void CGameObjectManager::addGameObject(CGameObject * pObject)
 {
+	//add to the vector for iteration
 	m_GameObjects.push_back(pObject);
+	//also add to map for quick lookups
 	m_GameObjectsMap[pObject->getName()]=pObject;
 }
 
+//get beginning of vector
 vector<CGameObject*>::iterator CGameObjectManager::getBegining()
 {
 	return m_GameObjects.begin();
 }
 
+//get the end of vector
 vector<CGameObject*>::iterator CGameObjectManager::getEnd()
 {
 	return m_GameObjects.end();
 }
 
+//find the game object by name
 CGameObject * CGameObjectManager::findGameObject(const string& name)
 {
 	return m_GameObjectsMap[name];
@@ -33,9 +40,11 @@ CGameObject * CGameObjectManager::findGameObject(const string& name)
 
 void CGameObjectManager::clear()
 {
+	//clear out the vector
 	m_GameObjectIter=m_GameObjects.begin();
 	while(m_GameObjectIter!=m_GameObjects.end())
 	{
+		//delete the element
 		if ((*m_GameObjectIter))
 		{
 			delete (*m_GameObjectIter);
@@ -50,6 +59,7 @@ void CGameObjectManager::clear()
 	m_GameObjectsMap.clear();
 }
 
+//init, cycle through all the game objects
 void CGameObjectManager::init()
 {
 	for(m_GameObjectIter=m_GameObjects.begin();m_GameObjectIter!=m_GameObjects.end();m_GameObjectIter++)
@@ -57,7 +67,8 @@ void CGameObjectManager::init()
 		(*m_GameObjectIter)->init();
 	}
 }
-	
+
+//update
 void CGameObjectManager::update(float elapsedTime)
 {
 	for(m_GameObjectIter=m_GameObjects.begin();m_GameObjectIter!=m_GameObjects.end();m_GameObjectIter++)
@@ -66,6 +77,7 @@ void CGameObjectManager::update(float elapsedTime)
 	}
 }
 
+//render
 void CGameObjectManager::render()
 {
 	for(m_GameObjectIter=m_GameObjects.begin();m_GameObjectIter!=m_GameObjects.end();m_GameObjectIter++)

@@ -4,6 +4,7 @@
 
 CMaterialComponent::CMaterialComponent()
 {
+	//set to null
 	m_pEffect=NULL;
 	m_pVertexLayout=NULL;
 	m_EffectName="";
@@ -14,11 +15,13 @@ CMaterialComponent::CMaterialComponent()
 
 CMaterialComponent::~CMaterialComponent()
 {
+	//vertex layout
 	if (m_pVertexLayout)
 	{
 		m_pVertexLayout->Release();
 		m_pVertexLayout=NULL;
 	}
+	//effect
 	if (m_pEffect)
 	{
 		m_pEffect->Release();
@@ -26,6 +29,7 @@ CMaterialComponent::~CMaterialComponent()
 	}
 }
 
+//load effect from memory
 void CMaterialComponent::loadEffectFromMemory(const char * pData)
 {
 	DWORD dwShaderFlags = D3D10_SHADER_ENABLE_STRICTNESS;
@@ -58,6 +62,7 @@ void CMaterialComponent::loadEffectFromMemory(const char * pData)
 	}
 }
 
+//load effect from file
 void CMaterialComponent::loadEffectFromFile(const string &name)
 {
 	setEffectFilename(name);
@@ -91,6 +96,7 @@ void CMaterialComponent::loadEffectFromFile(const string &name)
     }
 }
 
+//init
 void CMaterialComponent::init()
 {
 	//load effect
@@ -106,13 +112,16 @@ void CMaterialComponent::init()
 	//Grab the technique
 	m_pTechnique=m_pEffect->GetTechniqueByName(m_TechniqueName.c_str());
 	m_pTechnique->GetDesc(&m_TechniqueDesc);
+	//create vertex layout
 	createVertexLayout();
 
+	//Retrieve all variables using semantic
 	m_pWorldMatrixVariable=m_pEffect->GetVariableBySemantic("WORLD")->AsMatrix();
 	m_pViewMatrixVariable=m_pEffect->GetVariableBySemantic("VIEW")->AsMatrix();
 	m_pProjectionMatrixVariable=m_pEffect->GetVariableBySemantic("PROJECTION")->AsMatrix();
 }
 
+//create vertex layout
 void CMaterialComponent::createVertexLayout()
 {
 	//Number of elements in the layout - BMD

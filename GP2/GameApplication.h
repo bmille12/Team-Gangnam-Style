@@ -39,8 +39,7 @@ private:
 	D3DXMATRIX m_matView;
 	D3DXMATRIX m_matProjection;
 	CTimer m_Timer;
-
-	//vector<CGameObject*> m_DisplayList;
-	//vector<CGameObject*>::iterator m_DisplayListIter;
+	
+	//Get Game Object Manager
 	CGameObjectManager *m_pGameObjectManager;
 };

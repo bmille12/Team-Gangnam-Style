@@ -1,5 +1,6 @@
 #pragma once
 
+//Default effect this is stored in memory
 const char *pDefaultEffect="float4x4 matWorld:WORLD;"
 "float4x4 matView:VIEW;"
 "float4x4 matProjection:PROJECTION;"

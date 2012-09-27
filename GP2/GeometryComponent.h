@@ -1,5 +1,6 @@
 #pragma once
 
+//Header files
 #include "IComponent.h"
 #include "Vertex.h"
 
@@ -8,19 +9,14 @@
 
 #include <vector>
 
-
 using namespace std;
 
+//Geometry class, this holds a vertex buffer and index buffer
 class CGeometryComponent:public CBaseComponent
 {
 public:
 	CGeometryComponent();
 	~CGeometryComponent();
-
-	void SetRenderingDevice(ID3D10Device *pDevice)
-	{
-		m_pD3D10Device=pDevice;
-	};
 
 	void init();
 
@@ -42,10 +38,11 @@ public:
 		return m_Vertices.size();
 	};
 private:
-	ID3D10Device *m_pD3D10Device;
+	//The index and vertex buffer
 	ID3D10Buffer *m_pVertexBuffer;
 	ID3D10Buffer *m_pIndexBuffer;
-
+	//Vector of the vertices, basically a growable array
 	vector<Vertex> m_Vertices;
+	//Vector of the indices
 	vector<int> m_Indices;
 };
