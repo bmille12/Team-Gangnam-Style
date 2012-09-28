@@ -9,6 +9,7 @@
 #include "MaterialComponent.h"
 #include "GeometryComponent.h"
 #include "TransformComponent.h"
+#include "CameraComponent.h"
 
 #include <vector>
 
@@ -35,9 +36,6 @@ private:
 
 	ID3D10DepthStencilView * m_pDepthStencelView;
 	ID3D10Texture2D *m_pDepthStencilTexture;
-
-	D3DXMATRIX m_matView;
-	D3DXMATRIX m_matProjection;
 	CTimer m_Timer;
 	
 	//Get Game Object Manager

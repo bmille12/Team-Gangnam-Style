@@ -60,6 +60,9 @@
     <ClCompile Include="ModelLoader.cpp">
       <Filter>Model</Filter>
     </ClCompile>
+    <ClCompile Include="CameraComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Win32Window.h">
@@ -97,6 +100,9 @@
     </ClInclude>
     <ClInclude Include="ModelLoader.h">
       <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraComponent.h">
+      <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

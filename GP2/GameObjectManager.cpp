@@ -1,5 +1,6 @@
 #include "GameObjectManager.h"
 #include "GameObject.h"
+#include "CameraComponent.h"
 
 CGameObjectManager::CGameObjectManager()
 {
@@ -18,6 +19,14 @@ void CGameObjectManager::addGameObject(CGameObject * pObject)
 	m_GameObjects.push_back(pObject);
 	//also add to map for quick lookups
 	m_GameObjectsMap[pObject->getName()]=pObject;
+
+	CCameraComponent * pCamera=static_cast<CCameraComponent*>(pObject->getComponent("CameraComponent"));
+	if (pCamera)
+	{
+		m_pMainCamera=pCamera;
+		m_Cameras.push_back(pCamera);
+	}
+
 }
 
 //get beginning of vector

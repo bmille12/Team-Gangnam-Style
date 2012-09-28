@@ -59,6 +59,7 @@ bool CGameApplication::initGame()
     //http://msdn.microsoft.com/en-us/library/bb173590%28v=VS.85%29.aspx - BMD
     m_pD3D10Device->IASetPrimitiveTopology( D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST );	
 
+	/*
 	D3DXVECTOR3 cameraPos(0.0f,0.0f,-10.0f);
 	D3DXVECTOR3 cameraLook(0.0f,0.0f,0.0f);
 	D3DXVECTOR3 cameraUp(0.0f,1.0f,0.0f);
@@ -68,10 +69,11 @@ bool CGameApplication::initGame()
 	UINT numViewports=1;
 	m_pD3D10Device->RSGetViewports(&numViewports,&vp);
 
-	D3DXMatrixPerspectiveFovLH(&m_matProjection,(float)D3DX_PI*0.25f,vp.Width/(FLOAT)vp.Height,0.1f,1000.0f);
+	D3DXMatrixPerspectiveFovLH(&m_matProjection,(float)D3DX_PI*0.25f,vp.Width/(FLOAT)vp.Height,0.1f,1000.0f);*/
 
 	//Create Game Object
 	CGameObject *pTestGameObject=new CGameObject();
+	pTestGameObject->getTransform()->setScale(0.1f,0.1f,0.1f);
 	//Set the name
 	pTestGameObject->setName("Test");
 	
@@ -84,7 +86,26 @@ bool CGameApplication::initGame()
 	CModelLoader modelloader;
 	CGeometryComponent *pGeometry=modelloader.loadModelFromFile(m_pD3D10Device,"humanoid.fbx");
 	pGeometry->SetRenderingDevice(m_pD3D10Device);
-	
+
+	CGameObject *pCameraGameObject=new CGameObject();
+	pCameraGameObject->getTransform()->setPosition(0.0f,0.0f,-10.0f);
+	pCameraGameObject->setName("Camera");
+
+
+	D3D10_VIEWPORT vp;
+	UINT numViewports=1;
+	m_pD3D10Device->RSGetViewports(&numViewports,&vp);
+
+	CCameraComponent *pCamera=new CCameraComponent();
+	pCamera->setUp(0.0f,1.0f,0.0f);
+	pCamera->setLookAt(0.0f,0.0f,0.0f);
+	pCamera->setFOV(D3DX_PI*0.25f);
+	pCamera->setAspectRatio((float)(vp.Width/vp.Height));
+	pCamera->setFarClip(1000.0f);
+	pCamera->setNearClip(0.1f);
+
+	pCameraGameObject->addComponent(pCamera);
+
 	/*
     // Some vertices - BMD
     Vertex vertices[] =
@@ -127,6 +148,7 @@ bool CGameApplication::initGame()
 	pTestGameObject->addComponent(pGeometry);
 	//add the game object
 	m_pGameObjectManager->addGameObject(pTestGameObject);
+	m_pGameObjectManager->addGameObject(pCameraGameObject);
 	//init
 	m_pGameObjectManager->init();
 	
@@ -175,8 +197,8 @@ void CGameApplication::render()
 		if (pMaterial)
 		{
 			//set the matrices
-			pMaterial->setProjectionMatrix((float*)m_matProjection);
-			pMaterial->setViewMatrix((float*)m_matView);
+			pMaterial->setProjectionMatrix((float*)m_pGameObjectManager->getMainCamera()->getProjection());
+			pMaterial->setViewMatrix((float*)m_pGameObjectManager->getMainCamera()->getView());
 			pMaterial->setWorldMatrix((float*)pTransform->getWorld());
 			//bind the vertex layout
 			pMaterial->bindVertexLayout();

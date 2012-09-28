@@ -74,6 +74,11 @@ public:
 		m_vecScale=D3DXVECTOR3(x,y,z);
 	};
 
+	D3DXVECTOR3& getPosition()
+	{
+		return m_vecPosition;
+	};
+
 	//get world
 	D3DXMATRIX& getWorld()
 	{
