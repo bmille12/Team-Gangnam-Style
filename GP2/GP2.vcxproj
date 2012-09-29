@@ -84,6 +84,8 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameObjectManager.cpp" />
     <ClCompile Include="GeometryComponent.cpp" />
+    <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MaterialComponent.cpp" />
     <ClCompile Include="ModelLoader.cpp" />
@@ -100,6 +102,8 @@
     <ClInclude Include="GameObjectManager.h" />
     <ClInclude Include="GeometryComponent.h" />
     <ClInclude Include="IComponent.h" />
+    <ClInclude Include="Input.h" />
+    <ClInclude Include="Keyboard.h" />
     <ClInclude Include="MaterialComponent.h" />
     <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="Timer.h" />
