@@ -102,6 +102,11 @@ bool CGameApplication::initGame()
 
 	pCameraGameObject->addComponent(pCamera);
 
+	CAudioListenerComponent *pListener=new CAudioListenerComponent();
+	pListener->setAudioSystem(m_pAudioSystem);
+
+	pCameraGameObject->addComponent(pListener);
+
 	/*
     // Some vertices - BMD
     Vertex vertices[] =
