@@ -2,6 +2,8 @@
 #include "GameObject.h"
 
 #include "ModelLoader.h"
+#include "Input.h"
+#include "Keyboard.h"
 
 CGameApplication::CGameApplication(void)
 {
@@ -53,6 +55,8 @@ bool CGameApplication::init()
 	if (!initWindow())
 		return false;
 	if (!initGraphics())
+		return false;
+	if (!initInput())
 		return false;
 	if (!initAudio())
 		return false;
@@ -229,12 +233,24 @@ void CGameApplication::update()
 	m_Timer.update();
 	m_pAudioSystem->update();
 
+	if (CInput::getInstance().getKeyboard()->isKeyDown((int)'A'))
+	{
+		//play sound
+		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Test")->getTransform();
+		pTransform->rotate(m_Timer.getElapsedTime(),0.0f,0.0f);
+	}
+
 	m_pGameObjectManager->update(m_Timer.getElapsedTime());
 
-	CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Test")->getTransform();
-	pTransform->rotate(m_Timer.getElapsedTime(),0.0f,0.0f);
+	
+	
 }
 
+bool CGameApplication::initInput()
+{
+	CInput::getInstance().init();
+	return true;
+}
 bool CGameApplication::initAudio()
 {
 	FMOD_RESULT result;

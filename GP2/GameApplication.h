@@ -26,6 +26,7 @@ public:
 	bool init();
 	void run();
 private:
+	bool initInput();
 	bool initGame();
 	bool initGraphics();
 	bool initAudio();
