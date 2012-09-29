@@ -11,11 +11,17 @@ CGameApplication::CGameApplication(void)
 	m_pSwapChain=NULL;
 	m_pDepthStencelView=NULL;
 	m_pDepthStencilTexture=NULL;
+	m_pAudioSystem=NULL;
 	m_pGameObjectManager=new CGameObjectManager();
 }
 
 CGameApplication::~CGameApplication(void)
 {
+	if (m_pAudioSystem)
+	{
+		m_pAudioSystem->release();
+		m_pAudioSystem=NULL;
+	}
 	if (m_pD3D10Device)
 		m_pD3D10Device->ClearState();
 
@@ -48,6 +54,8 @@ bool CGameApplication::init()
 		return false;
 	if (!initGraphics())
 		return false;
+	if (!initAudio())
+		return false;
 	if (!initGame())
 		return false;
 	return true;
@@ -58,18 +66,6 @@ bool CGameApplication::initGame()
     // Set primitive topology, how are we going to interpet the vertices in the vertex buffer - BMD
     //http://msdn.microsoft.com/en-us/library/bb173590%28v=VS.85%29.aspx - BMD
     m_pD3D10Device->IASetPrimitiveTopology( D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST );	
-
-	/*
-	D3DXVECTOR3 cameraPos(0.0f,0.0f,-10.0f);
-	D3DXVECTOR3 cameraLook(0.0f,0.0f,0.0f);
-	D3DXVECTOR3 cameraUp(0.0f,1.0f,0.0f);
-	D3DXMatrixLookAtLH(&m_matView,&cameraPos,&cameraLook,&cameraUp);
-
-	D3D10_VIEWPORT vp;
-	UINT numViewports=1;
-	m_pD3D10Device->RSGetViewports(&numViewports,&vp);
-
-	D3DXMatrixPerspectiveFovLH(&m_matProjection,(float)D3DX_PI*0.25f,vp.Width/(FLOAT)vp.Height,0.1f,1000.0f);*/
 
 	//Create Game Object
 	CGameObject *pTestGameObject=new CGameObject();
@@ -149,6 +145,7 @@ bool CGameApplication::initGame()
 	//add the game object
 	m_pGameObjectManager->addGameObject(pTestGameObject);
 	m_pGameObjectManager->addGameObject(pCameraGameObject);
+
 	//init
 	m_pGameObjectManager->init();
 	
@@ -225,10 +222,28 @@ void CGameApplication::render()
 void CGameApplication::update()
 {
 	m_Timer.update();
+	m_pAudioSystem->update();
+
 	m_pGameObjectManager->update(m_Timer.getElapsedTime());
 
 	CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Test")->getTransform();
 	pTransform->rotate(m_Timer.getElapsedTime(),0.0f,0.0f);
+}
+
+bool CGameApplication::initAudio()
+{
+	FMOD_RESULT result;
+	result = FMOD::System_Create(&m_pAudioSystem);		// Create the main system object.
+	if (result != FMOD_OK)
+	{
+		return false;
+	}
+	result = m_pAudioSystem->init(100, FMOD_INIT_NORMAL, 0);	// Initialize FMOD.
+	if (result!=FMOD_OK)
+	{
+		return false;
+	}
+	return true;
 }
 
 //initGraphics - initialise the graphics subsystem - BMD

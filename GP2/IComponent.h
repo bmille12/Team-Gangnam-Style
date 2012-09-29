@@ -31,7 +31,7 @@ public:
 	virtual void init()=0;
 
 	//Get Parent
-	virtual const CGameObject * getParent()=0;
+	virtual CGameObject * getParent()=0;
 
 	//Set parent
 	virtual void setParent(CGameObject *pParent)=0;
@@ -83,7 +83,7 @@ public:
 	};
 
 	//Get the Game Object that this is attached too
-	const CGameObject * getParent()
+	CGameObject * getParent()
 	{
 		return m_pParent;
 	};

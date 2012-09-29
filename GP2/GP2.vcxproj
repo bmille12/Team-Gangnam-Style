@@ -50,13 +50,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(FBXSDK_DIR)\include;$(DXSDK_DIR)\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(FMODSDK_DIR)\inc;$(FBXSDK_DIR)\include;$(DXSDK_DIR)\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(FBXSDK_DIR)\lib\vs2010\x86;$(DXSDK_DIR)\lib\x86</AdditionalLibraryDirectories>
-      <AdditionalDependencies>d3d10.lib;d3dx10.lib;fbxsdk-2013.1d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FMODSDK_DIR)\lib;$(FBXSDK_DIR)\lib\vs2010\x86;$(DXSDK_DIR)\lib\x86</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d10.lib;d3dx10.lib;fbxsdk-2013.1d.lib;fmodex_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -77,6 +77,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AudioListenerComponent.cpp" />
+    <ClCompile Include="AudioSourceComponent.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="GameApplication.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -89,6 +91,8 @@
     <ClCompile Include="Win32Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AudioListenerComponent.h" />
+    <ClInclude Include="AudioSourceComponent.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="DefaultEffect.h" />
     <ClInclude Include="GameApplication.h" />
