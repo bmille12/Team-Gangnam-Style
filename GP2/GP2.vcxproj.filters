@@ -34,6 +34,12 @@
     <Filter Include="Input">
       <UniqueIdentifier>{6144b435-887c-41ed-8a2a-bb34e6a68c34}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{a24d86c9-2c0e-42d5-acae-3b4ab14be046}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Physics">
+      <UniqueIdentifier>{6de5861c-04ab-45e7-94d8-1965a742cb3b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -83,6 +89,12 @@
     </ClCompile>
     <ClCompile Include="Joypad.cpp">
       <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="BodyComponent.cpp">
+      <Filter>Components\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +154,12 @@
     </ClInclude>
     <ClInclude Include="Joypad.h">
       <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="BodyComponent.h">
+      <Filter>Components\Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
