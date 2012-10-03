@@ -121,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ScreenSpace.fx" />
+    <None Include="Texture.fx" />
     <None Include="Transform.fx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

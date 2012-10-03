@@ -80,15 +80,17 @@ bool CGameApplication::initGame()
 	//create material
 	CMaterialComponent *pMaterial=new CMaterialComponent();
 	pMaterial->SetRenderingDevice(m_pD3D10Device);
-	pMaterial->setEffectFilename("Transform.fx");
+	pMaterial->loadDiffuseTexture("face.png");
+	pMaterial->setEffectFilename("Texture.fx");
 	
 	//Create geometry
 	CModelLoader modelloader;
-	CGeometryComponent *pGeometry=modelloader.loadModelFromFile(m_pD3D10Device,"humanoid.fbx");
+	//CGeometryComponent *pGeometry=modelloader.loadModelFromFile(m_pD3D10Device,"humanoid.fbx");
+	CGeometryComponent *pGeometry=modelloader.createCube(m_pD3D10Device,2.0f,2.0f,2.0f);
 	pGeometry->SetRenderingDevice(m_pD3D10Device);
 
 	CGameObject *pCameraGameObject=new CGameObject();
-	pCameraGameObject->getTransform()->setPosition(0.0f,0.0f,-10.0f);
+	pCameraGameObject->getTransform()->setPosition(0.0f,0.0f,0.0f);
 	pCameraGameObject->setName("Camera");
 
 
@@ -105,49 +107,13 @@ bool CGameApplication::initGame()
 	pCamera->setNearClip(0.1f);
 
 	pCameraGameObject->addComponent(pCamera);
+	pCameraGameObject->getTransform()->setPosition(0.0f,0.0f,-5.0f);
 
 	CAudioListenerComponent *pListener=new CAudioListenerComponent();
 	pListener->setAudioSystem(m_pAudioSystem);
 
 	pCameraGameObject->addComponent(pListener);
 
-	/*
-    // Some vertices - BMD
-    Vertex vertices[] =
-    {
-		//front
-        D3DXVECTOR3( -0.5f, 0.5f, 0.5f ), //0 top left 
-        D3DXVECTOR3( 0.5f, -0.5f, 0.5f ),//1 bottom right 
-        D3DXVECTOR3( -0.5f, -0.5f, 0.5f ), //2 bottom left
-		D3DXVECTOR3( 0.5f, 0.5f, 0.5f ), //3 top right
-
-		//back
-        D3DXVECTOR3( -0.5f, 0.5f, -0.5f ), //4 top left
-        D3DXVECTOR3( 0.5f, -0.5f, -0.5f ),//5 bottom right
-        D3DXVECTOR3( -0.5f, -0.5f, -0.5f ), //6 bottom left
-		D3DXVECTOR3( 0.5f, 0.5f, -0.5f ), //7 top right
-    };
-	
-	//add these vertices
-	for(int i=0;i<8;i++)
-	{
-		pGeometry->addVertex(vertices[i]);
-	}
-
-	//indices
-	int indices[]={0,1,2,0,3,1,//front
-					4,5,6,4,7,5, //back
-					0,6,4,0,2,6, //left
-					3,5,7,3,1,5, //right
-					0,4,3,0,3,7, //top
-					2,6,1,6,5,1	 //bottom
-					};
-	//add these indices
-	for(int i=0;i<36;i++)
-	{
-		pGeometry->addIndex(indices[i]);
-	}
-	*/
 	//Add component
 	pTestGameObject->addComponent(pMaterial);
 	pTestGameObject->addComponent(pGeometry);
@@ -206,6 +172,7 @@ void CGameApplication::render()
 			pMaterial->setProjectionMatrix((float*)m_pGameObjectManager->getMainCamera()->getProjection());
 			pMaterial->setViewMatrix((float*)m_pGameObjectManager->getMainCamera()->getView());
 			pMaterial->setWorldMatrix((float*)pTransform->getWorld());
+			pMaterial->setTextures();
 			//bind the vertex layout
 			pMaterial->bindVertexLayout();
 			//loop for the passes in the material

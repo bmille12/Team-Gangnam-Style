@@ -53,6 +53,12 @@ public:
 		m_pCurrentPass->Apply(0);
 	};
 
+	void loadDiffuseTexture(const string& filename);
+
+	void setTextures()
+	{
+		m_pDiffuseTextureVariable->SetResource(m_pDiffuseTexture);
+	};
 	//set the world matrix
 	void setWorldMatrix(float * pMatrix)
 	{
@@ -96,4 +102,8 @@ protected:
 	ID3D10EffectMatrixVariable * m_pViewMatrixVariable;
 	ID3D10EffectMatrixVariable * m_pProjectionMatrixVariable;
 	ID3D10EffectMatrixVariable * m_pWorldMatrixVariable;
+	ID3D10EffectShaderResourceVariable *m_pDiffuseTextureVariable;
+
+	//Textures
+	ID3D10ShaderResourceView *m_pDiffuseTexture;
 };

@@ -14,6 +14,46 @@ CModelLoader::~CModelLoader()
 {
 }
 
+CGeometryComponent * CModelLoader::createCube(ID3D10Device *pDevice,float width, float height, float length)
+{
+	CGeometryComponent * pRenderable=new CGeometryComponent();
+
+    Vertex vertices[] =
+    {
+		//front
+		{D3DXVECTOR3( -width/2.0f, height/2.0f, length/2.0f ),D3DXCOLOR(1.0f,0.0f,0.0f,1.0f),D3DXVECTOR2(0.0f,0.0f)}, //0 top left 
+        {D3DXVECTOR3( width/2.0f, -height/2.0f, length/2.0f ),D3DXCOLOR(1.0f,0.0f,0.0f,1.0f),D3DXVECTOR2(1.0f,1.0f)},//1 bottom right 
+        {D3DXVECTOR3( -width/2.0f, -height/2.0f, length/2.0f ),D3DXCOLOR(0.0f,1.0f,0.0f,1.0f),D3DXVECTOR2(0.0f,1.0f)}, //2 bottom left
+		{D3DXVECTOR3( width/2.0f, height/2.0f, length/2.0f ), D3DXCOLOR(0.0f,1.0f,0.0f,1.0f), D3DXVECTOR2(1.0f,0.0f)}, //3 top right
+
+		//back
+        {D3DXVECTOR3(-width/2.0f, height/2.0f, -length/2.0f ),D3DXCOLOR(0.0f,0.0f,1.0f,1.0f),D3DXVECTOR2(0.0f,0.0f)}, //4 top left
+        {D3DXVECTOR3( width/2.0f, -height/2.0f, -length/2.0f ),D3DXCOLOR(0.0f,1.0f,0.0f,1.0f),D3DXVECTOR2(1.0f,1.0f)},//5 bottom right
+        {D3DXVECTOR3(-width/2.0f, -height/2.0f, -length/2.0f), D3DXCOLOR(1.0f,1.0f,0.0f,1.0f),D3DXVECTOR2(0.0f,1.0f)}, //6 bottom left
+		{D3DXVECTOR3( width/2.0f, height/2.0f, -length/2.0f),D3DXCOLOR(1.0f,1.0f,0.0f,1.0f),D3DXVECTOR2(1.0f,0.0f)} //7 top right
+    };
+
+	int indices[]={0,1,2,0,3,1,//front
+					4,5,6,4,7,5, //back
+					0,6,4,0,2,6, //left
+					3,5,7,3,1,5, //right
+					0,4,3,0,3,7, //top
+					2,6,1,6,5,1	 //bottom
+					};
+
+	for (int i=0;i<8;i++)
+	{
+		pRenderable->addVertex(vertices[i]);
+	}
+
+	for (int i=0;i<36;i++)
+	{
+		pRenderable->addIndex(indices[i]);
+	}
+
+
+	return pRenderable;
+}
 
 CGeometryComponent *CModelLoader::loadModelFromFile(ID3D10Device *pDevice,const string& filename)
 {

@@ -7,6 +7,7 @@ CMaterialComponent::CMaterialComponent()
 	//set to null
 	m_pEffect=NULL;
 	m_pVertexLayout=NULL;
+	m_pDiffuseTexture=NULL;
 	m_EffectName="";
 	m_TechniqueName="Render";
 	ZeroMemory(&m_TechniqueDesc,sizeof(D3D10_TECHNIQUE_DESC));
@@ -15,6 +16,12 @@ CMaterialComponent::CMaterialComponent()
 
 CMaterialComponent::~CMaterialComponent()
 {
+	//
+	if (m_pDiffuseTexture)
+	{
+		m_pDiffuseTexture->Release();
+		m_pDiffuseTexture=NULL;
+	}
 	//vertex layout
 	if (m_pVertexLayout)
 	{
@@ -96,6 +103,15 @@ void CMaterialComponent::loadEffectFromFile(const string &name)
     }
 }
 
+void CMaterialComponent::loadDiffuseTexture(const string& filename)
+{
+	if (FAILED(D3DX10CreateShaderResourceViewFromFileA(m_pD3D10Device,
+		filename.c_str(), NULL, NULL,&m_pDiffuseTexture , NULL)))
+	{
+		OutputDebugStringA("Can't load Texture");
+	}
+}
+
 //init
 void CMaterialComponent::init()
 {
@@ -119,6 +135,7 @@ void CMaterialComponent::init()
 	m_pWorldMatrixVariable=m_pEffect->GetVariableBySemantic("WORLD")->AsMatrix();
 	m_pViewMatrixVariable=m_pEffect->GetVariableBySemantic("VIEW")->AsMatrix();
 	m_pProjectionMatrixVariable=m_pEffect->GetVariableBySemantic("PROJECTION")->AsMatrix();
+	m_pDiffuseTextureVariable=m_pEffect->GetVariableByName("diffuseTexture")->AsShaderResource();
 }
 
 //create vertex layout
