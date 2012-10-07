@@ -77,11 +77,21 @@ public:
 		m_pViewMatrixVariable->SetMatrix(pMatrix);
 	};
 
+	//lights
+	void setLightPositions(float *pData,UINT stride, UINT count);
+	void setLightDirections(float *pData,UINT stride,UINT count);
+	void setDiffuseLightColours(float *pData,UINT stride,UINT count);
+	void setSpecularLightColours(float *pData,UINT stride,UINT count);
+
+	void setAmbientLightColour(D3DXCOLOR& colour);
+
 	//bind the vertex layout
 	void bindVertexLayout()
 	{
 		m_pD3D10Device->IASetInputLayout(m_pVertexLayout);
 	};
+
+
 protected:
 	//effect variables
 	ID3D10Effect*           m_pEffect;
@@ -103,6 +113,16 @@ protected:
 	ID3D10EffectMatrixVariable * m_pProjectionMatrixVariable;
 	ID3D10EffectMatrixVariable * m_pWorldMatrixVariable;
 	ID3D10EffectShaderResourceVariable *m_pDiffuseTextureVariable;
+
+	//Colour variables
+	ID3D10EffectVectorVariable *m_pAmbientColourVariable;
+	ID3D10EffectVectorVariable *m_pDiffuseLightColoursVariable;
+	ID3D10EffectVectorVariable *m_pSpecularLightColoursVariable;
+	ID3D10EffectVectorVariable *m_pLightDirectionsVariable;
+	ID3D10EffectVectorVariable *m_pLightPositionsVariable;
+	ID3D10EffectScalarVariable *m_pNumberOfLightsVariable;
+	//Color
+	D3DXCOLOR m_AmbientColour;
 
 	//Textures
 	ID3D10ShaderResourceView *m_pDiffuseTexture;
