@@ -45,16 +45,6 @@ public:
 		D3DXMatrixMultiply(&m_matWorld,&m_matWorld,&m_matTranslate);
 	};
 
-	//empty render
-	void render()
-	{
-	};
-
-	//empty init
-	void init()
-	{
-	};
-
 	//set position
 	void setPosition(float x,float y,float z)
 	{
