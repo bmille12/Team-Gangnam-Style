@@ -18,8 +18,6 @@ public:
 
 	CGeometryComponent * loadModelFromFile(ID3D10Device *pDevice,const string& filename);
 	CGeometryComponent * createCube(ID3D10Device *pDevice,float width, float height, float length);  
-
-	//CRenderable * loadModelFromFile(ID3D10Device *pDevice,const string& filename);
 private:
 	CGeometryComponent * loadFbxModelFromFile(ID3D10Device *pDevice,const string& filename);
 };
