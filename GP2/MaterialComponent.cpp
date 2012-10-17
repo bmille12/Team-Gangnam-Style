@@ -177,12 +177,12 @@ void CMaterialComponent::setLightDirections(float *pData,UINT stride, UINT count
 
 void CMaterialComponent::setDiffuseLightColours(float *pData,UINT stride, UINT count)
 {
-	m_pDiffuseColourVariable->SetFloatVectorArray(pData,stride,count);
+	m_pDiffuseLightColoursVariable->SetFloatVectorArray(pData,stride,count);
 }
 
 void CMaterialComponent::setSpecularLightColours(float *pData,UINT stride, UINT count)
 {
-	m_pSpecularColourVariable->SetFloatVectorArray(pData,stride,count);
+	m_pSpecularLightColoursVariable->SetFloatVectorArray(pData,stride,count);
 }
 
 void CMaterialComponent::setAmbientLightColour(D3DXCOLOR& colour)

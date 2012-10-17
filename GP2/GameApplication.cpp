@@ -73,7 +73,6 @@ bool CGameApplication::initGame()
 
 	//Create Game Object
 	CGameObject *pTestGameObject=new CGameObject();
-	pTestGameObject->getTransform()->setScale(0.1f,0.1f,0.1f);
 	//Set the name
 	pTestGameObject->setName("Test");
 	
@@ -81,7 +80,7 @@ bool CGameApplication::initGame()
 	CMaterialComponent *pMaterial=new CMaterialComponent();
 	pMaterial->SetRenderingDevice(m_pD3D10Device);
 	pMaterial->loadDiffuseTexture("face.png");
-	pMaterial->setEffectFilename("Texture.fx");
+	pMaterial->setEffectFilename("Transform.fx");
 	
 	//Create geometry
 	CModelLoader modelloader;
