@@ -77,12 +77,6 @@ public:
 		m_pViewMatrixVariable->SetMatrix(pMatrix);
 	};
 
-	//lights
-	void setLightPositions(float *pData,UINT stride, UINT count);
-	void setLightDirections(float *pData,UINT stride,UINT count);
-	void setDiffuseLightColours(float *pData,UINT stride,UINT count);
-	void setSpecularLightColours(float *pData,UINT stride,UINT count);
-
 	void setAmbientLightColour(D3DXCOLOR& colour);
 
 	//bind the vertex layout
@@ -116,11 +110,7 @@ protected:
 
 	//Colour variables
 	ID3D10EffectVectorVariable *m_pAmbientColourVariable;
-	ID3D10EffectVectorVariable *m_pDiffuseLightColoursVariable;
-	ID3D10EffectVectorVariable *m_pSpecularLightColoursVariable;
-	ID3D10EffectVectorVariable *m_pLightDirectionsVariable;
-	ID3D10EffectVectorVariable *m_pLightPositionsVariable;
-	ID3D10EffectScalarVariable *m_pNumberOfLightsVariable;
+
 	//Color
 	D3DXCOLOR m_AmbientColour;
 

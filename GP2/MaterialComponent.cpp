@@ -138,12 +138,7 @@ void CMaterialComponent::init()
 	m_pDiffuseTextureVariable=m_pEffect->GetVariableByName("diffuseTexture")->AsShaderResource();
 
 	//lights
-	m_pNumberOfLightsVariable=m_pEffect->GetVariableByName("numberOfLights")->AsScalar();
 	m_pAmbientColourVariable=m_pEffect->GetVariableByName("ambientLightColour")->AsVector();
-	m_pDiffuseLightColoursVariable=m_pEffect->GetVariableByName("diffuseLightColours")->AsVector();
-	m_pSpecularLightColoursVariable=m_pEffect->GetVariableByName("specularLightColours")->AsVector();
-	m_pLightDirectionsVariable=m_pEffect->GetVariableByName("lightDirections")->AsVector();
-	m_pLightPositionsVariable=m_pEffect->GetVariableByName("lightPositions")->AsVector();
 }
 
 //create vertex layout
@@ -163,26 +158,6 @@ void CMaterialComponent::createVertexLayout()
 	{
 		OutputDebugStringA("Can't create layout");
 	}
-}
-
-void CMaterialComponent::setLightPositions(float *pData,UINT stride, UINT count)
-{
-	m_pLightPositionsVariable->SetFloatVectorArray(pData,stride,count);
-}
-	
-void CMaterialComponent::setLightDirections(float *pData,UINT stride, UINT count)
-{
-	m_pLightDirectionsVariable->SetFloatVectorArray(pData,stride,count);
-}
-
-void CMaterialComponent::setDiffuseLightColours(float *pData,UINT stride, UINT count)
-{
-	m_pDiffuseLightColoursVariable->SetFloatVectorArray(pData,stride,count);
-}
-
-void CMaterialComponent::setSpecularLightColours(float *pData,UINT stride, UINT count)
-{
-	m_pSpecularLightColoursVariable->SetFloatVectorArray(pData,stride,count);
 }
 
 void CMaterialComponent::setAmbientLightColour(D3DXCOLOR& colour)

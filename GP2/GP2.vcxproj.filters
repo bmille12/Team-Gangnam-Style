@@ -37,17 +37,11 @@
     <Filter Include="Physics">
       <UniqueIdentifier>{a24d86c9-2c0e-42d5-acae-3b4ab14be046}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Components\Physics">
-      <UniqueIdentifier>{6de5861c-04ab-45e7-94d8-1965a742cb3b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scripting">
       <UniqueIdentifier>{aeed588e-1eea-4689-9b2a-bb3359c7fe67}</UniqueIdentifier>
     </Filter>
     <Filter Include="Components\Lights">
       <UniqueIdentifier>{9ed38a39-cd91-4cd1-a0be-ce9a9fc88c2f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Components\Audio">
-      <UniqueIdentifier>{214ef4bb-8a1e-43d8-97ef-793a712e4896}</UniqueIdentifier>
     </Filter>
     <Filter Include="Components\Material">
       <UniqueIdentifier>{fdcd1ace-41a6-4b9b-a924-e3adeb5e886a}</UniqueIdentifier>
@@ -95,15 +89,6 @@
     </ClCompile>
     <ClCompile Include="Physics.cpp">
       <Filter>Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="BodyComponent.cpp">
-      <Filter>Components\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioListenerComponent.cpp">
-      <Filter>Components\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSourceComponent.cpp">
-      <Filter>Components\Audio</Filter>
     </ClCompile>
     <ClCompile Include="MaterialComponent.cpp">
       <Filter>Components\Material</Filter>
@@ -160,15 +145,6 @@
     </ClInclude>
     <ClInclude Include="Physics.h">
       <Filter>Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="BodyComponent.h">
-      <Filter>Components\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSourceComponent.h">
-      <Filter>Components\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioListenerComponent.h">
-      <Filter>Components\Audio</Filter>
     </ClInclude>
     <ClInclude Include="MaterialComponent.h">
       <Filter>Components\Material</Filter>

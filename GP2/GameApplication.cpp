@@ -13,17 +13,11 @@ CGameApplication::CGameApplication(void)
 	m_pSwapChain=NULL;
 	m_pDepthStencelView=NULL;
 	m_pDepthStencilTexture=NULL;
-	m_pAudioSystem=NULL;
 	m_pGameObjectManager=new CGameObjectManager();
 }
 
 CGameApplication::~CGameApplication(void)
 {
-	if (m_pAudioSystem)
-	{
-		m_pAudioSystem->release();
-		m_pAudioSystem=NULL;
-	}
 	if (m_pD3D10Device)
 		m_pD3D10Device->ClearState();
 
@@ -57,8 +51,6 @@ bool CGameApplication::init()
 	if (!initGraphics())
 		return false;
 	if (!initInput())
-		return false;
-	if (!initAudio())
 		return false;
 	if (!initGame())
 		return false;
@@ -107,11 +99,6 @@ bool CGameApplication::initGame()
 
 	pCameraGameObject->addComponent(pCamera);
 	pCameraGameObject->getTransform()->setPosition(0.0f,0.0f,-5.0f);
-
-	CAudioListenerComponent *pListener=new CAudioListenerComponent();
-	pListener->setAudioSystem(m_pAudioSystem);
-
-	pCameraGameObject->addComponent(pListener);
 
 	//Add component
 	pTestGameObject->addComponent(pMaterial);
@@ -197,7 +184,6 @@ void CGameApplication::render()
 void CGameApplication::update()
 {
 	m_Timer.update();
-	m_pAudioSystem->update();
 
 	if (CInput::getInstance().getKeyboard()->isKeyDown((int)'A'))
 	{
@@ -217,21 +203,7 @@ bool CGameApplication::initInput()
 	CInput::getInstance().init();
 	return true;
 }
-bool CGameApplication::initAudio()
-{
-	FMOD_RESULT result;
-	result = FMOD::System_Create(&m_pAudioSystem);		// Create the main system object.
-	if (result != FMOD_OK)
-	{
-		return false;
-	}
-	result = m_pAudioSystem->init(100, FMOD_INIT_NORMAL, 0);	// Initialize FMOD.
-	if (result!=FMOD_OK)
-	{
-		return false;
-	}
-	return true;
-}
+
 
 //initGraphics - initialise the graphics subsystem - BMD
 bool CGameApplication::initGraphics()
