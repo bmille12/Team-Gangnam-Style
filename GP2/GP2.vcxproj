@@ -85,19 +85,16 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Joypad.cpp" />
     <ClCompile Include="Keyboard.cpp" />
-    <ClCompile Include="LightComponent.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MaterialComponent.cpp" />
     <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="Mouse.cpp" />
-    <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Win32Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="DefaultEffect.h" />
-    <ClInclude Include="DirectionalLightComponent.h" />
     <ClInclude Include="GameApplication.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameObjectManager.h" />
@@ -106,11 +103,9 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="Joypad.h" />
     <ClInclude Include="Keyboard.h" />
-    <ClInclude Include="LightComponent.h" />
     <ClInclude Include="MaterialComponent.h" />
     <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="Mouse.h" />
-    <ClInclude Include="Physics.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TransformComponent.h" />
     <ClInclude Include="Vertex.h" />

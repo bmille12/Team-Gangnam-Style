@@ -34,9 +34,6 @@
     <Filter Include="Input">
       <UniqueIdentifier>{6144b435-887c-41ed-8a2a-bb34e6a68c34}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Physics">
-      <UniqueIdentifier>{a24d86c9-2c0e-42d5-acae-3b4ab14be046}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scripting">
       <UniqueIdentifier>{aeed588e-1eea-4689-9b2a-bb3359c7fe67}</UniqueIdentifier>
     </Filter>
@@ -87,9 +84,6 @@
     <ClCompile Include="Joypad.cpp">
       <Filter>Input</Filter>
     </ClCompile>
-    <ClCompile Include="Physics.cpp">
-      <Filter>Physics</Filter>
-    </ClCompile>
     <ClCompile Include="MaterialComponent.cpp">
       <Filter>Components\Material</Filter>
     </ClCompile>
@@ -98,9 +92,6 @@
     </ClCompile>
     <ClCompile Include="CameraComponent.cpp">
       <Filter>Components\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="LightComponent.cpp">
-      <Filter>Components\Lights</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -143,9 +134,6 @@
     <ClInclude Include="Joypad.h">
       <Filter>Input</Filter>
     </ClInclude>
-    <ClInclude Include="Physics.h">
-      <Filter>Physics</Filter>
-    </ClInclude>
     <ClInclude Include="MaterialComponent.h">
       <Filter>Components\Material</Filter>
     </ClInclude>
@@ -157,12 +145,6 @@
     </ClInclude>
     <ClInclude Include="DefaultEffect.h">
       <Filter>Components\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="LightComponent.h">
-      <Filter>Components\Lights</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectionalLightComponent.h">
-      <Filter>Components\Lights</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
