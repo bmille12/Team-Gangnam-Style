@@ -68,23 +68,24 @@ bool CGameApplication::initGame()
 	//Set the name
 	pTestGameObject->setName("Test");
 	pTestGameObject->getTransform()->setPosition(0.0f,0.0f,10.0f);
-	pTestGameObject->getTransform()->setScale(0.01f,0.01f,0.01f);
+	pTestGameObject->getTransform()->setScale(1.0f,1.0f,1.0f);
 	
 	//create material
 	CMaterialComponent *pMaterial=new CMaterialComponent();
 	pMaterial->SetRenderingDevice(m_pD3D10Device);
 	pMaterial->setEffectFilename("Specular.fx");
-	pMaterial->setAmbientMaterialColour(D3DXCOLOR(1.0f,1.0f,1.0f,1.0f));
+	pMaterial->setAmbientMaterialColour(D3DXCOLOR(0.5f,0.5f,0.5f,1.0f));
 
 	
 	//Create geometry
 	CModelLoader modelloader;
-	CGeometryComponent *pGeometry=modelloader.loadModelFromFile(m_pD3D10Device,"humanoid.fbx");
-	pGeometry->SetRenderingDevice(m_pD3D10Device);
+	CMeshComponent *pMesh=modelloader.loadModelFromFile(m_pD3D10Device,"armoredrecon.fbx");
+	//CMeshComponent *pMesh=modelloader.createCube(m_pD3D10Device,10.0f,10.0f,10.0f);
+	pMesh->SetRenderingDevice(m_pD3D10Device);
 
 	//Add component
 	pTestGameObject->addComponent(pMaterial);
-	pTestGameObject->addComponent(pGeometry);
+	pTestGameObject->addComponent(pMesh);
 	//add the game object
 	m_pGameObjectManager->addGameObject(pTestGameObject);
 
@@ -153,16 +154,10 @@ void CGameApplication::render()
 		//grab the transform
 		CTransformComponent *pTransform=(*iter)->getTransform();
 		//and the geometry
-		CGeometryComponent *pGeometry=static_cast<CGeometryComponent*>((*iter)->getComponent("GeometryComponent"));
+		CMeshComponent *pMesh=static_cast<CMeshComponent*>((*iter)->getComponent("MeshComponent"));
 		//and the material
 		CMaterialComponent *pMaterial=static_cast<CMaterialComponent*>((*iter)->getComponent("MaterialComponent"));
 
-		//if we have a valid geometry
-		if (pGeometry)
-		{
-			//bind the buffer
-			pGeometry->bindBuffers();
-		}
 		//do we have a matrial
 		if (pMaterial)
 		{
@@ -193,10 +188,14 @@ void CGameApplication::render()
 				//Apply the current pass
 				pMaterial->applyPass(i);
 				//we have a geometry
-				if (pGeometry)
+				if (pMesh)
 				{
-					//draw from the geometry
-					m_pD3D10Device->DrawIndexed(pGeometry->getNumberOfIndices(),0,0);
+					for (int i=0;i<pMesh->getTotalNumberOfSubsets();i++)
+					{
+						CGeometry *pSubset=pMesh->getSubset(i);
+						pSubset->bindBuffers();
+						m_pD3D10Device->DrawIndexed(pSubset->getNumberOfIndices(),0,0);
+					}
 				}
 			}
 		}
@@ -383,7 +382,7 @@ bool CGameApplication::initGraphics()
 bool CGameApplication::initWindow()
 {
 	m_pWindow=new CWin32Window();
-	if (!m_pWindow->init(TEXT("Lab 1 - Triangle"),800,640,false))
+	if (!m_pWindow->init(TEXT("Games Programming"),800,640,false))
 		return false;
 	return true;
 }

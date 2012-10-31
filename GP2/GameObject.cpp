@@ -15,6 +15,20 @@ CGameObject::CGameObject()
 CGameObject::~CGameObject()
 {
 	//delete everything in the vector
+	vector<CGameObject*>::iterator gameObjectIter=m_ChildGameObjects.begin();
+	while(gameObjectIter!=m_ChildGameObjects.end())
+	{
+		if ((*gameObjectIter))
+		{
+			delete (*gameObjectIter);
+			(*gameObjectIter)=NULL;
+			gameObjectIter=m_ChildGameObjects.erase(gameObjectIter);
+		}
+		else
+		{
+			gameObjectIter++;
+		}
+	}
 	vector<IComponent*>::iterator iter=m_Components.begin();
 	while(iter!=m_Components.end())
 	{
@@ -52,6 +66,10 @@ void CGameObject::init()
 	{
 		(*iter)->init();
 	}
+	for (vector<CGameObject*>::iterator gameObjectIter=m_ChildGameObjects.begin();gameObjectIter!=m_ChildGameObjects.end();gameObjectIter++)
+	{
+		(*gameObjectIter)->init();
+	}
 }
 
 //render, cycle through each component and call render
@@ -61,6 +79,10 @@ void CGameObject::render()
 	{
 		(*iter)->render();
 	}
+	for (vector<CGameObject*>::iterator gameObjectIter=m_ChildGameObjects.begin();gameObjectIter!=m_ChildGameObjects.end();gameObjectIter++)
+	{
+		(*gameObjectIter)->render();
+	}
 }
 
 //update, cycle through each compoent and call update
@@ -69,5 +91,9 @@ void CGameObject::update(float elapsedTime)
 	for (vector<IComponent*>::iterator iter=m_Components.begin();iter!=m_Components.end();iter++)
 	{
 		(*iter)->update(elapsedTime);
+	}
+	for (vector<CGameObject*>::iterator gameObjectIter=m_ChildGameObjects.begin();gameObjectIter!=m_ChildGameObjects.end();gameObjectIter++)
+	{
+		(*gameObjectIter)->update(elapsedTime);
 	}
 }

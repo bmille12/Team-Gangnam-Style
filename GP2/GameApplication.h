@@ -7,10 +7,10 @@
 #include "GameObjectManager.h"
 
 #include "MaterialComponent.h"
-#include "GeometryComponent.h"
 #include "TransformComponent.h"
 #include "CameraComponent.h"
 #include "DirectionLightComponent.h"
+#include "MeshComponent.h"
 
 #include <vector>
 

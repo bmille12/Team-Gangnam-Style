@@ -87,9 +87,6 @@
     <ClCompile Include="MaterialComponent.cpp">
       <Filter>Components\Material</Filter>
     </ClCompile>
-    <ClCompile Include="GeometryComponent.cpp">
-      <Filter>Components\Geometry</Filter>
-    </ClCompile>
     <ClCompile Include="CameraComponent.cpp">
       <Filter>Components\Camera</Filter>
     </ClCompile>
@@ -98,6 +95,12 @@
     </ClCompile>
     <ClCompile Include="DirectionalLightComponent.cpp">
       <Filter>Components\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry.cpp">
+      <Filter>Components\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshComponent.cpp">
+      <Filter>Components\Geometry</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -143,9 +146,6 @@
     <ClInclude Include="MaterialComponent.h">
       <Filter>Components\Material</Filter>
     </ClInclude>
-    <ClInclude Include="GeometryComponent.h">
-      <Filter>Components\Geometry</Filter>
-    </ClInclude>
     <ClInclude Include="CameraComponent.h">
       <Filter>Components\Camera</Filter>
     </ClInclude>
@@ -157,6 +157,12 @@
     </ClInclude>
     <ClInclude Include="DirectionLightComponent.h">
       <Filter>Components\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshComponent.h">
+      <Filter>Components\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h">
+      <Filter>Components\Geometry</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

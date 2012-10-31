@@ -7,7 +7,7 @@
 #include <d3dx10.h>
 #include "Vertex.h"
 
-class CGeometryComponent;
+class CMeshComponent;
 
 using namespace std;
 
@@ -18,10 +18,10 @@ public:
 	CModelLoader();
 	~CModelLoader();
 
-	CGeometryComponent * loadModelFromFile(ID3D10Device *pDevice,const string& filename);
-	CGeometryComponent * createCube(ID3D10Device *pDevice,float width, float height, float length);  
+	CMeshComponent * loadModelFromFile(ID3D10Device *pDevice,const string& filename);
+	CMeshComponent * createCube(ID3D10Device *pDevice,float width, float height, float length);  
 private:
-	CGeometryComponent * loadFbxModelFromFile(ID3D10Device *pDevice,const string& filename);
+	CMeshComponent * loadFbxModelFromFile(ID3D10Device *pDevice,const string& filename);
 
 	void computeTangents(Vertex *pVerts,int vertexCount);
 };

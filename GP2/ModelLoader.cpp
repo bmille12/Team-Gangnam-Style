@@ -1,7 +1,7 @@
 #include "ModelLoader.h"
 #include <fbxsdk.h>
 
-#include "GeometryComponent.h"
+#include "MeshComponent.h"
 
 //might need this for new versions of the SDK
 //#include <fbxsdk/utils/>
@@ -14,9 +14,9 @@ CModelLoader::~CModelLoader()
 {
 }
 
-CGeometryComponent * CModelLoader::createCube(ID3D10Device *pDevice,float width, float height, float length)
+CMeshComponent * CModelLoader::createCube(ID3D10Device *pDevice,float width, float height, float length)
 {
-	CGeometryComponent * pRenderable=new CGeometryComponent();
+	CMeshComponent * pMesh=new CMeshComponent();
 
     Vertex vertices[] =
     {
@@ -41,23 +41,24 @@ CGeometryComponent * CModelLoader::createCube(ID3D10Device *pDevice,float width,
 					2,6,1,6,5,1	 //bottom
 					};
 
+	CGeometry * pGeom=new CGeometry(pDevice);
 	for (int i=0;i<8;i++)
 	{
-		pRenderable->addVertex(vertices[i]);
+		pGeom->addVertex(vertices[i]);
 	}
 
 	for (int i=0;i<36;i++)
 	{
-		pRenderable->addIndex(indices[i]);
+		pGeom->addIndex(indices[i]);
 	}
+	pMesh->addSubset(pGeom);
 
-
-	return pRenderable;
+	return pMesh;
 }
 
-CGeometryComponent *CModelLoader::loadModelFromFile(ID3D10Device *pDevice,const string& filename)
+CMeshComponent *CModelLoader::loadModelFromFile(ID3D10Device *pDevice,const string& filename)
 {
-	CGeometryComponent * pRenderable=NULL;
+	CMeshComponent * pRenderable=NULL;
 	string extension=filename.substr(filename.find('.')+1);
 
 	if (extension.compare("fbx")==0)
@@ -66,9 +67,14 @@ CGeometryComponent *CModelLoader::loadModelFromFile(ID3D10Device *pDevice,const 
 	return pRenderable;
 }
 
-CGeometryComponent * CModelLoader::loadFbxModelFromFile(ID3D10Device *pDevice,const string& filename)
+
+CMeshComponent * CModelLoader::loadFbxModelFromFile(ID3D10Device *pDevice,const string& filename)
 {
-	CGeometryComponent * pRenderable=NULL;
+	CMeshComponent * pMeshComponent=new CMeshComponent();
+	int noVerts=0;
+	int noIndices=0;
+	int *pIndices=NULL;
+	Vertex * pVerts=NULL;
 
 	FbxManager* lSdkManager = FbxManager::Create();
 	FbxIOSettings *ios = FbxIOSettings::Create(lSdkManager, IOSROOT);
@@ -111,73 +117,75 @@ CGeometryComponent * CModelLoader::loadFbxModelFromFile(ID3D10Device *pDevice,co
 				{
 					//found mesh
 					pMesh=(FbxMesh*)pAttributeNode;
-					break;
-				}
-			}
-		}
-		if (pMesh)
-		{
-			pMesh=converter.TriangulateMesh(pMesh);
-			FbxVector4 * verts=pMesh->GetControlPoints();
-			int noVerts=pMesh->GetControlPointsCount();
+					if (pMesh)
+					{
+						CGeometry *pGeom=new CGeometry(pDevice);
+						pMesh=converter.TriangulateMesh(pMesh);
+						FbxVector4 * verts=pMesh->GetControlPoints();
+						int noVerts=pMesh->GetControlPointsCount();
 
-			int noIndices=pMesh->GetPolygonVertexCount();
-			int *pIndices=pMesh->GetPolygonVertices();
+						int noIndices=pMesh->GetPolygonVertexCount();
+						int *pIndices=pMesh->GetPolygonVertices();
 
-			Vertex * pVerts=new Vertex[noVerts];
-			for(int i=0;i<noVerts;i++)
-			{
+						Vertex * pVerts=new Vertex[noVerts];
+						for(int i=0;i<noVerts;i++)
+						{
 
-					pVerts[i].Pos.x=verts[i][0];
-					pVerts[i].Pos.y=verts[i][1];
-					pVerts[i].Pos.z=verts[i][2];
-			}
+								pVerts[i].Pos.x=verts[i][0];
+								pVerts[i].Pos.y=verts[i][1];
+								pVerts[i].Pos.z=verts[i][2];
+						}
 
-			for (int iPolygon = 0; iPolygon < pMesh->GetPolygonCount(); iPolygon++) { 
-				for (unsigned iPolygonVertex = 0; iPolygonVertex < 3; iPolygonVertex++) {	
-					int fbxCornerIndex = pMesh->GetPolygonVertex(iPolygon, iPolygonVertex);
-					FbxVector4 fbxVertex = verts[fbxCornerIndex];
+						for (int iPolygon = 0; iPolygon < pMesh->GetPolygonCount(); iPolygon++) { 
+							for (unsigned iPolygonVertex = 0; iPolygonVertex < 3; iPolygonVertex++) {	
+								int fbxCornerIndex = pMesh->GetPolygonVertex(iPolygon, iPolygonVertex);
+								FbxVector4 fbxVertex = verts[fbxCornerIndex];
 
-					FbxVector4 fbxNormal;	
-					pMesh->GetPolygonVertexNormal(iPolygon, iPolygonVertex, fbxNormal);	
-					fbxNormal.Normalize();	
-					pVerts[fbxCornerIndex].Normal=D3DXVECTOR3(fbxNormal[0],fbxNormal[1],fbxNormal[2]);
+								FbxVector4 fbxNormal;	
+								pMesh->GetPolygonVertexNormal(iPolygon, iPolygonVertex, fbxNormal);	
+								fbxNormal.Normalize();	
+								pVerts[fbxCornerIndex].Normal=D3DXVECTOR3(fbxNormal[0],fbxNormal[1],fbxNormal[2]);
 
-					FbxVector2 fbxUV = FbxVector2(0.0, 0.0);	
-					FbxLayerElementUV* fbxLayerUV = pMesh->GetLayer(0)->GetUVs();
-					// Get texture coordinate	
-					if (fbxLayerUV) {		
-						int iUVIndex = 0;		
-						switch (fbxLayerUV->GetMappingMode()) {	
-							case FbxLayerElement::eByControlPoint:
-								iUVIndex = fbxCornerIndex;				
-							break;	
-							case FbxLayerElement::eByPolygonVertex:
-								iUVIndex = pMesh->GetTextureUVIndex(iPolygon, iPolygonVertex, FbxLayerElement::eTextureDiffuse);	
-							break;		
-						}		
-						fbxUV = fbxLayerUV->GetDirectArray().GetAt(iUVIndex);	
-						pVerts[fbxCornerIndex].TexCoords.x=fbxUV[0];
-						pVerts[fbxCornerIndex].TexCoords.y= 1.0f-fbxUV[1];
+								FbxVector2 fbxUV = FbxVector2(0.0, 0.0);	
+								FbxLayerElementUV* fbxLayerUV = pMesh->GetLayer(0)->GetUVs();
+								// Get texture coordinate	
+								if (fbxLayerUV) {		
+									int iUVIndex = 0;		
+									switch (fbxLayerUV->GetMappingMode()) {	
+										case FbxLayerElement::eByControlPoint:
+											iUVIndex = fbxCornerIndex;				
+										break;	
+										case FbxLayerElement::eByPolygonVertex:
+											iUVIndex = pMesh->GetTextureUVIndex(iPolygon, iPolygonVertex, FbxLayerElement::eTextureDiffuse);	
+										break;		
+									}		
+									fbxUV = fbxLayerUV->GetDirectArray().GetAt(iUVIndex);	
+									pVerts[fbxCornerIndex].TexCoords.x=fbxUV[0];
+									pVerts[fbxCornerIndex].TexCoords.y= 1.0f-fbxUV[1];
+								}
+							}
+						}
+
+						computeTangents(pVerts,noVerts);
+			
+						for (int i=0;i<noVerts;i++)
+						{
+							pGeom->addVertex(pVerts[i]);
+						}
+						for (int i=0;i<noIndices;i++)
+						{
+							pGeom->addIndex(pIndices[i]);
+						}
+			
+						if (pVerts)
+						{
+							delete [] pVerts;
+							pVerts=NULL;
+						}
+
+						pMeshComponent->addSubset(pGeom);
 					}
-
 				}
-			}
-
-			computeTangents(pVerts,noVerts);
-			pRenderable=new CGeometryComponent();
-			for (int i=0;i<noVerts;i++)
-			{
-				pRenderable->addVertex(pVerts[i]);
-			}
-			for (int i=0;i<noIndices;i++)
-			{
-				pRenderable->addIndex(pIndices[i]);
-			}
-			if (pVerts)
-			{
-				delete [] pVerts;
-				pVerts=NULL;
 			}
 		}
     }
@@ -187,7 +195,7 @@ CGeometryComponent * CModelLoader::loadFbxModelFromFile(ID3D10Device *pDevice,co
 
 	
 
-	return pRenderable;
+	return pMeshComponent;
 }
 
 

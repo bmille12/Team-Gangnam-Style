@@ -52,6 +52,21 @@ public:
 	{
 		return m_strName;
 	};
+
+	void addGameObject(CGameObject *pObject)
+	{
+		m_ChildGameObjects.push_back(pObject);
+	};
+
+	vector<CGameObject*>::iterator getFirstChild()
+	{
+		return m_ChildGameObjects.begin();
+	}
+
+	vector<CGameObject*>::iterator getLastChild()
+	{
+		return m_ChildGameObjects.end();
+	}
 private:
 	//transform component
 	CTransformComponent * m_pTransform;
@@ -61,4 +76,5 @@ private:
 	vector<IComponent*> m_Components;
 	//name
 	string m_strName;
+	vector<CGameObject*> m_ChildGameObjects;
 };
