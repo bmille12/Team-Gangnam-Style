@@ -138,7 +138,8 @@ void CMaterialComponent::init()
 	m_pDiffuseTextureVariable=m_pEffect->GetVariableByName("diffuseTexture")->AsShaderResource();
 
 	//lights
-	m_pAmbientColourVariable=m_pEffect->GetVariableByName("ambientLightColour")->AsVector();
+	m_pAmbientLightColourVariable=m_pEffect->GetVariableByName("ambientLightColour")->AsVector();
+	m_pAmbientMaterialVariable=m_pEffect->GetVariableByName("ambientMaterial")->AsVector();
 }
 
 //create vertex layout
@@ -162,5 +163,5 @@ void CMaterialComponent::createVertexLayout()
 
 void CMaterialComponent::setAmbientLightColour(D3DXCOLOR& colour)
 {
-	m_pAmbientColourVariable->SetFloatVector((float*)colour);
+	m_pAmbientLightColourVariable->SetFloatVector((float*)colour);
 }

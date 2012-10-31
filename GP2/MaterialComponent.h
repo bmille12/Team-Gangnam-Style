@@ -79,12 +79,21 @@ public:
 
 	void setAmbientLightColour(D3DXCOLOR& colour);
 
+	void setAmbientMaterialColour(D3DXCOLOR& colour)
+	{
+		m_AmbientMaterial=colour;
+	}
+
 	//bind the vertex layout
 	void bindVertexLayout()
 	{
 		m_pD3D10Device->IASetInputLayout(m_pVertexLayout);
 	};
 
+	void setMaterial()
+	{
+		m_pAmbientMaterialVariable->SetFloatVector((float*)m_AmbientMaterial);
+	};
 
 protected:
 	//effect variables
@@ -106,13 +115,17 @@ protected:
 	ID3D10EffectMatrixVariable * m_pViewMatrixVariable;
 	ID3D10EffectMatrixVariable * m_pProjectionMatrixVariable;
 	ID3D10EffectMatrixVariable * m_pWorldMatrixVariable;
+	//Textures
 	ID3D10EffectShaderResourceVariable *m_pDiffuseTextureVariable;
+	//Light
+	ID3D10EffectVectorVariable *m_pAmbientLightColourVariable;
+	//Material
+	ID3D10EffectVectorVariable *m_pAmbientMaterialVariable;
 
-	//Colour variables
-	ID3D10EffectVectorVariable *m_pAmbientColourVariable;
+	//Material colours
+	D3DXCOLOR m_AmbientMaterial;
 
-	//Color
-	D3DXCOLOR m_AmbientColour;
+
 
 	//Textures
 	ID3D10ShaderResourceView *m_pDiffuseTexture;

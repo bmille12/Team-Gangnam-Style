@@ -67,21 +67,29 @@ bool CGameApplication::initGame()
 	CGameObject *pTestGameObject=new CGameObject();
 	//Set the name
 	pTestGameObject->setName("Test");
+	pTestGameObject->getTransform()->setPosition(0.0f,0.0f,10.0f);
+	pTestGameObject->getTransform()->setScale(0.01f,0.01f,0.01f);
 	
 	//create material
 	CMaterialComponent *pMaterial=new CMaterialComponent();
 	pMaterial->SetRenderingDevice(m_pD3D10Device);
-	pMaterial->loadDiffuseTexture("face.png");
-	pMaterial->setEffectFilename("Transform.fx");
+	pMaterial->setEffectFilename("Ambient.fx");
+	pMaterial->setAmbientMaterialColour(D3DXCOLOR(1.0f,1.0f,1.0f,1.0f));
+
 	
 	//Create geometry
 	CModelLoader modelloader;
 	CGeometryComponent *pGeometry=modelloader.loadModelFromFile(m_pD3D10Device,"humanoid.fbx");
-	//CGeometryComponent *pGeometry=modelloader.createCube(m_pD3D10Device,2.0f,2.0f,2.0f);
 	pGeometry->SetRenderingDevice(m_pD3D10Device);
 
+	//Add component
+	pTestGameObject->addComponent(pMaterial);
+	pTestGameObject->addComponent(pGeometry);
+	//add the game object
+	m_pGameObjectManager->addGameObject(pTestGameObject);
+
 	CGameObject *pCameraGameObject=new CGameObject();
-	pCameraGameObject->getTransform()->setPosition(0.0f,0.0f,0.0f);
+	pCameraGameObject->getTransform()->setPosition(0.0f,0.0f,-5.0f);
 	pCameraGameObject->setName("Camera");
 
 
@@ -96,15 +104,8 @@ bool CGameApplication::initGame()
 	pCamera->setAspectRatio((float)(vp.Width/vp.Height));
 	pCamera->setFarClip(1000.0f);
 	pCamera->setNearClip(0.1f);
-
 	pCameraGameObject->addComponent(pCamera);
-	pCameraGameObject->getTransform()->setPosition(0.0f,0.0f,-5.0f);
 
-	//Add component
-	pTestGameObject->addComponent(pMaterial);
-	pTestGameObject->addComponent(pGeometry);
-	//add the game object
-	m_pGameObjectManager->addGameObject(pTestGameObject);
 	m_pGameObjectManager->addGameObject(pCameraGameObject);
 
 	//init
@@ -158,7 +159,11 @@ void CGameApplication::render()
 			pMaterial->setProjectionMatrix((float*)m_pGameObjectManager->getMainCamera()->getProjection());
 			pMaterial->setViewMatrix((float*)m_pGameObjectManager->getMainCamera()->getView());
 			pMaterial->setWorldMatrix((float*)pTransform->getWorld());
+			//set light colour
+			pMaterial->setAmbientLightColour(D3DXCOLOR(0.5f,0.5f,0.5f,1.0f));
+
 			pMaterial->setTextures();
+			pMaterial->setMaterial();
 			//bind the vertex layout
 			pMaterial->bindVertexLayout();
 			//loop for the passes in the material
