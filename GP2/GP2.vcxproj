@@ -120,6 +120,7 @@
   <ItemGroup>
     <None Include="ambient.fx" />
     <None Include="diffuse.fx" />
+    <None Include="DirectionalLight.fx" />
     <None Include="ScreenSpace.fx" />
     <None Include="Specular.fx" />
     <None Include="Texture.fx" />

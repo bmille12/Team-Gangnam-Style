@@ -184,5 +184,8 @@
     <None Include="ambient.fx">
       <Filter>Effects</Filter>
     </None>
+    <None Include="DirectionalLight.fx">
+      <Filter>Effects</Filter>
+    </None>
   </ItemGroup>
 </Project>
