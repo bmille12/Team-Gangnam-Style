@@ -12,6 +12,11 @@ CMaterialComponent::CMaterialComponent()
 	m_TechniqueName="Render";
 	ZeroMemory(&m_TechniqueDesc,sizeof(D3D10_TECHNIQUE_DESC));
 	m_strName="MaterialComponent";
+
+	m_DiffuseMaterial=D3DXCOLOR(0.8f,0.8f,0.8f,1.0f);
+	m_AmbientMaterial=D3DXCOLOR(0.5f,0.5f,0.5f,1.0f);
+	m_SpecularMaterial=D3DXCOLOR(1.0f,1.0f,1.0f,1.0f);
+	m_SpecularPower=25.0f;
 }
 
 CMaterialComponent::~CMaterialComponent()
@@ -139,7 +144,18 @@ void CMaterialComponent::init()
 
 	//lights
 	m_pAmbientLightColourVariable=m_pEffect->GetVariableByName("ambientLightColour")->AsVector();
-	m_pAmbientMaterialVariable=m_pEffect->GetVariableByName("ambientMaterial")->AsVector();
+	m_pDiffuseLightColourVariable=m_pEffect->GetVariableByName("diffuseLightColour")->AsVector();
+	m_pSpecularLightColourVariable=m_pEffect->GetVariableByName("specularLightColour")->AsVector();
+	m_pLightDirectionVariable=m_pEffect->GetVariableByName("lightDirection")->AsVector();
+
+	//Material
+	m_pAmbientMaterialVariable=m_pEffect->GetVariableByName("ambientMaterialColour")->AsVector();
+	m_pDiffuseMaterialVariable=m_pEffect->GetVariableByName("diffuseMaterialColour")->AsVector();
+	m_pSpecularMaterialVariable=m_pEffect->GetVariableByName("specularMaterialColour")->AsVector();
+	m_pSpecularPowerVariable=m_pEffect->GetVariableByName("specularPower")->AsScalar();
+
+	//Camera
+	m_pCameraPositionVariable=m_pEffect->GetVariableByName("cameraPosition")->AsVector();
 }
 
 //create vertex layout

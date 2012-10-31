@@ -2,7 +2,7 @@ float4x4 matWorld:WORLD<string UIWidget="None";>;
 float4x4 matView:VIEW<string UIWidget="None";>;
 float4x4 matProjection:PROJECTION<string UIWidget="None";>;
 
-float4 ambientMaterial
+float4 ambientMaterialColour
 <
 	string UIName="Ambient Material";
 	string UIWidget="Color";	

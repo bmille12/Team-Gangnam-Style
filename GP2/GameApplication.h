@@ -10,6 +10,7 @@
 #include "GeometryComponent.h"
 #include "TransformComponent.h"
 #include "CameraComponent.h"
+#include "DirectionLightComponent.h"
 
 #include <vector>
 

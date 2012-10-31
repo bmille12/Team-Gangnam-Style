@@ -93,6 +93,12 @@
     <ClCompile Include="CameraComponent.cpp">
       <Filter>Components\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="LightComponent.cpp">
+      <Filter>Components\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionalLightComponent.cpp">
+      <Filter>Components\Lights</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Win32Window.h">
@@ -145,6 +151,12 @@
     </ClInclude>
     <ClInclude Include="DefaultEffect.h">
       <Filter>Components\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="LightComponent.h">
+      <Filter>Components\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionLightComponent.h">
+      <Filter>Components\Lights</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

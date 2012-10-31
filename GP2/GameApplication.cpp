@@ -73,7 +73,7 @@ bool CGameApplication::initGame()
 	//create material
 	CMaterialComponent *pMaterial=new CMaterialComponent();
 	pMaterial->SetRenderingDevice(m_pD3D10Device);
-	pMaterial->setEffectFilename("Ambient.fx");
+	pMaterial->setEffectFilename("Specular.fx");
 	pMaterial->setAmbientMaterialColour(D3DXCOLOR(1.0f,1.0f,1.0f,1.0f));
 
 	
@@ -107,6 +107,17 @@ bool CGameApplication::initGame()
 	pCameraGameObject->addComponent(pCamera);
 
 	m_pGameObjectManager->addGameObject(pCameraGameObject);
+
+	CGameObject *pLightGameObject=new CGameObject();
+	pLightGameObject->setName("DirectionalLight");
+
+	CDirectionalLightComponent *pLightComponent=new CDirectionalLightComponent();
+	pLightComponent->setDirection(D3DXVECTOR3(0.0f,0.0f,-1.0f));
+	pLightGameObject->addComponent(pLightComponent);
+
+	m_pGameObjectManager->addGameObject(pLightGameObject);
+
+	m_pGameObjectManager->setMainLight(pLightComponent);
 
 	//init
 	m_pGameObjectManager->init();
@@ -155,12 +166,22 @@ void CGameApplication::render()
 		//do we have a matrial
 		if (pMaterial)
 		{
+			CCameraComponent *camera=m_pGameObjectManager->getMainCamera();
+
 			//set the matrices
-			pMaterial->setProjectionMatrix((float*)m_pGameObjectManager->getMainCamera()->getProjection());
-			pMaterial->setViewMatrix((float*)m_pGameObjectManager->getMainCamera()->getView());
+			pMaterial->setProjectionMatrix((float*)camera->getProjection());
+			pMaterial->setViewMatrix((float*)camera->getView());
 			pMaterial->setWorldMatrix((float*)pTransform->getWorld());
 			//set light colour
 			pMaterial->setAmbientLightColour(D3DXCOLOR(0.5f,0.5f,0.5f,1.0f));
+
+			//get the main light and the camera
+			CDirectionalLightComponent * light=m_pGameObjectManager->getMainLight();
+			pMaterial->setDiffuseLightColour(light->getDiffuseColour());
+			pMaterial->setSpecularLightColour(light->getSpecularColour());
+			pMaterial->setLightDirection(light->getLightDirection());
+			
+			pMaterial->setCameraPosition(camera->getParent()->getTransform()->getPosition());
 
 			pMaterial->setTextures();
 			pMaterial->setMaterial();
