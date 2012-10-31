@@ -68,7 +68,7 @@ bool useHeightTexture
 string UIName="Use Parrallax";
 > = false;
 
-float scale=0.03;
+float scale=0.05;
 float bias=0.01;
 
 SamplerState wrapSampler
@@ -134,7 +134,7 @@ float4 PS(PS_INPUT input):SV_TARGET
 	if (useHeightTexture){
 		float heightVal=heightMap.Sample(wrapSampler,input.texCoord).x;
 		float height=scale*heightVal-bias;
-		texCoords=height*input.cameraDirection.xy+input.texCoord;
+		texCoord=height*input.cameraDirection.xy+input.texCoord;
 	}
 	
 	

@@ -10,6 +10,7 @@ CMaterialComponent::CMaterialComponent()
 	m_pDiffuseTexture=NULL;
 	m_pSpecularTexture=NULL;
 	m_pBumpTexture=NULL;
+	m_pParallaxTexture=NULL;
 	m_EffectName="";
 	m_TechniqueName="Render";
 	ZeroMemory(&m_TechniqueDesc,sizeof(D3D10_TECHNIQUE_DESC));
@@ -28,6 +29,21 @@ CMaterialComponent::~CMaterialComponent()
 	{
 		m_pDiffuseTexture->Release();
 		m_pDiffuseTexture=NULL;
+	}
+	if (m_pSpecularTexture)
+	{
+		m_pSpecularTexture->Release();
+		m_pSpecularTexture=NULL;
+	}
+	if (m_pBumpTexture)
+	{
+		m_pBumpTexture->Release();
+		m_pBumpTexture=NULL;
+	}
+	if (m_pParallaxTexture)
+	{
+		m_pParallaxTexture->Release();
+		m_pParallaxTexture=NULL;
 	}
 	//vertex layout
 	if (m_pVertexLayout)
@@ -128,6 +144,16 @@ void CMaterialComponent::loadBumpTexture(const string& filename)
 	}
 }
 
+
+void CMaterialComponent::loadParallaxTexture(const string& filename)
+{
+	if (FAILED(D3DX10CreateShaderResourceViewFromFileA(m_pD3D10Device,
+		filename.c_str(), NULL, NULL,&m_pParallaxTexture , NULL)))
+	{
+		OutputDebugStringA("Can't load Texture");
+	}
+}
+
 void CMaterialComponent::loadSpecularTexture(const string& filename)
 {
 	if (FAILED(D3DX10CreateShaderResourceViewFromFileA(m_pD3D10Device,
@@ -163,6 +189,7 @@ void CMaterialComponent::init()
 	m_pDiffuseTextureVariable=m_pEffect->GetVariableByName("diffuseMap")->AsShaderResource();
 	m_pSpecularTextureVariable=m_pEffect->GetVariableByName("specularMap")->AsShaderResource();
 	m_pBumpTextureVariable=m_pEffect->GetVariableByName("bumpMap")->AsShaderResource();
+	m_pParallaxTextureVariable=m_pEffect->GetVariableByName("heightMap")->AsShaderResource();
 
 	//lights
 	m_pAmbientLightColourVariable=m_pEffect->GetVariableByName("ambientLightColour")->AsVector();
@@ -182,6 +209,7 @@ void CMaterialComponent::init()
 	m_pUseDiffuseTextureVariable=m_pEffect->GetVariableByName("useDiffuseTexture")->AsScalar();
 	m_pUseSpecularTextureVariable=m_pEffect->GetVariableByName("useSpecularTexture")->AsScalar();
 	m_pUseBumpTextureVariable=m_pEffect->GetVariableByName("useBumpTexture")->AsScalar();
+	m_pUseParallaxTextureVariable=m_pEffect->GetVariableByName("useHeightTexture")->AsScalar();
 }
 
 //create vertex layout
