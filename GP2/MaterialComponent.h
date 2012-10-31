@@ -55,15 +55,19 @@ public:
 
 	void loadDiffuseTexture(const string& filename);
 	void loadSpecularTexture(const string& filename);
+	void loadBumpTexture(const string& filename);
 
 	void setTextures()
 	{
 		m_pDiffuseTextureVariable->SetResource(m_pDiffuseTexture);
 		m_pSpecularTextureVariable->SetResource(m_pSpecularTexture);
+		m_pBumpTextureVariable->SetResource(m_pBumpTexture);
 		if (m_pDiffuseTexture)
 			m_pUseDiffuseTextureVariable->SetBool(TRUE);
 		if (m_pSpecularTexture)
 			m_pUseSpecularTextureVariable->SetBool(TRUE);
+		if (m_pBumpTexture)
+			m_pUseBumpTextureVariable->SetBool(TRUE);
 	};
 	//set the world matrix
 	void setWorldMatrix(float * pMatrix)
@@ -163,6 +167,8 @@ protected:
 	//Textures
 	ID3D10EffectShaderResourceVariable *m_pDiffuseTextureVariable;
 	ID3D10EffectShaderResourceVariable *m_pSpecularTextureVariable;
+	ID3D10EffectShaderResourceVariable *m_pBumpTextureVariable;
+
 	//Light
 	ID3D10EffectVectorVariable *m_pAmbientLightColourVariable;
 	ID3D10EffectVectorVariable *m_pDiffuseLightColourVariable;
@@ -180,6 +186,7 @@ protected:
 	//Texture switches
 	ID3D10EffectScalarVariable *m_pUseDiffuseTextureVariable;
 	ID3D10EffectScalarVariable *m_pUseSpecularTextureVariable;
+	ID3D10EffectScalarVariable *m_pUseBumpTextureVariable;
 
 	//Material colours
 	D3DXCOLOR m_AmbientMaterial;
@@ -190,4 +197,5 @@ protected:
 	//Textures
 	ID3D10ShaderResourceView *m_pDiffuseTexture;
 	ID3D10ShaderResourceView *m_pSpecularTexture;
+	ID3D10ShaderResourceView *m_pBumpTexture;
 };

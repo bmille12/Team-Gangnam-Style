@@ -187,5 +187,11 @@
     <None Include="DirectionalLight.fx">
       <Filter>Effects</Filter>
     </None>
+    <None Include="Bumpmapping.fx">
+      <Filter>Effects</Filter>
+    </None>
+    <None Include="Parallax.fx">
+      <Filter>Effects</Filter>
+    </None>
   </ItemGroup>
 </Project>
