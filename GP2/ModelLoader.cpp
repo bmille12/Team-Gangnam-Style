@@ -76,12 +76,8 @@ CGeometryComponent * CModelLoader::loadFbxModelFromFile(ID3D10Device *pDevice,co
 
     // Create an importer using our sdk manager.
     FbxImporter* lImporter = FbxImporter::Create(lSdkManager,"");
-	//Sean: uncomment back to this when you compile, I am using the latest version of fbx SDK
-	//KFbxGeometryConverter converter( lSdkManager);
-	//Sean: has comment out the line below
 	FbxGeometryConverter converter( lSdkManager);
 
-	 
     // Use the first argument as the filename for the importer.
 	if(!lImporter->Initialize(filename.c_str(), -1, lSdkManager->GetIOSettings())) {
 		return NULL;
@@ -92,10 +88,9 @@ CGeometryComponent * CModelLoader::loadFbxModelFromFile(ID3D10Device *pDevice,co
 	FbxAxisSystem SceneAxisSystem = lScene->GetGlobalSettings().GetAxisSystem();
     //FbxAxisSystem::DirectX.ConvertScene( lScene );
 
+
+
     INT iUpAxisSign;
-    //Sean: Uncomment this below
-	//KFbxAxisSystem::eUpVector UpVector = SceneAxisSystem.GetUpVector( iUpAxisSign );
-	//Sean: and comment this out
 	FbxAxisSystem::EUpVector UpVector = SceneAxisSystem.GetUpVector( iUpAxisSign );
 
     // Import the contents of the file into the scene.
@@ -112,9 +107,6 @@ CGeometryComponent * CModelLoader::loadFbxModelFromFile(ID3D10Device *pDevice,co
 			for(int i=0;i<modelNode->GetNodeAttributeCount();i++)
 			{
 				FbxNodeAttribute *pAttributeNode=modelNode->GetNodeAttributeByIndex(i);
-				//Sean: Uncomment this
-				//if (pAttributeNode->GetAttributeType()==KFbxNodeAttribute::eMESH)
-				//Sean Comment this out
 				if (pAttributeNode->GetAttributeType()==FbxNodeAttribute::eMesh)
 				{
 					//found mesh
@@ -149,36 +141,30 @@ CGeometryComponent * CModelLoader::loadFbxModelFromFile(ID3D10Device *pDevice,co
 					FbxVector4 fbxNormal;	
 					pMesh->GetPolygonVertexNormal(iPolygon, iPolygonVertex, fbxNormal);	
 					fbxNormal.Normalize();	
-					//pVerts[fbxCornerIndex].Normal=D3DXVECTOR3(fbxNormal[0],fbxNormal[1],fbxNormal[2]);
+					pVerts[fbxCornerIndex].Normal=D3DXVECTOR3(fbxNormal[0],fbxNormal[1],fbxNormal[2]);
+
 					FbxVector2 fbxUV = FbxVector2(0.0, 0.0);	
 					FbxLayerElementUV* fbxLayerUV = pMesh->GetLayer(0)->GetUVs();
 					// Get texture coordinate	
 					if (fbxLayerUV) {		
 						int iUVIndex = 0;		
 						switch (fbxLayerUV->GetMappingMode()) {	
-							//Sean Uncomment this
-							//case KFbxLayerElement::eBY_CONTROL_POINT:
-							//Sean comment the line below out
 							case FbxLayerElement::eByControlPoint:
 								iUVIndex = fbxCornerIndex;				
 							break;	
-							//Sean Uncomment this
-							//case KFbxLayerElement::eBY_POLYGON_VERTEX:
-							//Sean comment the line below out
 							case FbxLayerElement::eByPolygonVertex:
-								//Sean Uncomment this
-								//iUVIndex = pMesh->GetTextureUVIndex(iPolygon, iPolygonVertex, KFbxLayerElement::eDIFFUSE_TEXTURES);	
-								//Sean comment this out
 								iUVIndex = pMesh->GetTextureUVIndex(iPolygon, iPolygonVertex, FbxLayerElement::eTextureDiffuse);	
 							break;		
 						}		
 						fbxUV = fbxLayerUV->GetDirectArray().GetAt(iUVIndex);	
-						//pVerts[fbxCornerIndex].TextureCoords.x=fbxUV[0];
-						//pVerts[fbxCornerIndex].TextureCoords.y= 1.0f-fbxUV[1];
+						pVerts[fbxCornerIndex].TexCoords.x=fbxUV[0];
+						pVerts[fbxCornerIndex].TexCoords.y= 1.0f-fbxUV[1];
 					}
+
 				}
 			}
 
+			computeTangents(pVerts,noVerts);
 			pRenderable=new CGeometryComponent();
 			for (int i=0;i<noVerts;i++)
 			{
@@ -188,20 +174,81 @@ CGeometryComponent * CModelLoader::loadFbxModelFromFile(ID3D10Device *pDevice,co
 			{
 				pRenderable->addIndex(pIndices[i]);
 			}
-			//pRenderable->create<TexturedLitVertex>(pDevice,noVerts,noIndices,pVerts,(UINT*)pIndices);
 			if (pVerts)
 			{
 				delete [] pVerts;
 				pVerts=NULL;
 			}
-			//}
-
 		}
     }
 
 	lSdkManager->Destroy();
 
+
 	
 
 	return pRenderable;
+}
+
+
+void CModelLoader::computeTangents(Vertex *pVerts,int vertexCount)
+{
+	int triCount=vertexCount/3;
+	D3DXVECTOR3 * tan1=new D3DXVECTOR3[vertexCount];
+	D3DXVECTOR3 * tan2=new D3DXVECTOR3[vertexCount];
+
+	for (int i=0;i<triCount;i+=3)
+	{
+		D3DXVECTOR3 v1=pVerts[i].Pos;
+		D3DXVECTOR3 v2=pVerts[i+1].Pos;
+		D3DXVECTOR3 v3=pVerts[i+2].Pos;
+
+		D3DXVECTOR2 uv1=pVerts[i].TexCoords;
+		D3DXVECTOR2 uv2=pVerts[i+1].TexCoords;
+		D3DXVECTOR2 uv3=pVerts[i+2].TexCoords;
+			
+		float x1 = v2.x - v1.x;
+        float x2 = v3.x - v1.x;
+        float y1 = v2.y - v1.y;
+        float y2 = v3.y - v1.y;
+        float z1 = v2.z - v1.z;
+        float z2 = v3.z - v1.z;
+
+        float s1 = uv2.x - uv1.x;
+        float s2 = uv3.x - uv1.x;
+        float t1 = uv2.y - uv1.y;
+        float t2 = uv3.y - uv1.y;
+
+		float r=1.0f/(s1*t2-s2*t1);
+		D3DXVECTOR3 sdir = D3DXVECTOR3((t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r, (t2 * z1 - t1 * z2) * r);
+        D3DXVECTOR3 tdir = D3DXVECTOR3((s1 * x2 - s2 * x1) * r, (s1 * y2 - s2 * y1) * r, (s1 * z2 - s2 * z1) * r);
+
+        tan1[i] += sdir;
+        tan1[i+1] += sdir;
+        tan1[i+2] += sdir;
+
+        tan2[i] += tdir;
+        tan2[i+1] += tdir;
+        tan2[i+2] += tdir;
+	}
+	for (int i=0;i<vertexCount;i++)
+	{
+		D3DXVECTOR3 n=pVerts[i].Normal;
+		D3DXVECTOR3 t=tan1[i];
+		D3DXVECTOR3 tmp = (t - n * D3DXVec3Dot(&n, &t));
+		D3DXVec3Normalize(&tmp,&tmp);
+		pVerts[i].Tangent = D3DXVECTOR3(tmp.x, tmp.y, tmp.z);
+        //tangents[a].w = (Vector3.Dot(Vector3.Cross(n, t), tan2[a]) < 0.0f) ? -1.0f : 1.0f;
+
+	}
+	if (tan1)
+	{
+		delete [] tan1;
+		tan1=NULL;
+	}
+	if (tan2)
+	{
+		delete [] tan2;
+		tan2=NULL;
+	}
 }

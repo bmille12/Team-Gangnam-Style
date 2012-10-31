@@ -76,8 +76,8 @@ bool CGameApplication::initGame()
 	
 	//Create geometry
 	CModelLoader modelloader;
-	//CGeometryComponent *pGeometry=modelloader.loadModelFromFile(m_pD3D10Device,"humanoid.fbx");
-	CGeometryComponent *pGeometry=modelloader.createCube(m_pD3D10Device,2.0f,2.0f,2.0f);
+	CGeometryComponent *pGeometry=modelloader.loadModelFromFile(m_pD3D10Device,"humanoid.fbx");
+	//CGeometryComponent *pGeometry=modelloader.createCube(m_pD3D10Device,2.0f,2.0f,2.0f);
 	pGeometry->SetRenderingDevice(m_pD3D10Device);
 
 	CGameObject *pCameraGameObject=new CGameObject();
