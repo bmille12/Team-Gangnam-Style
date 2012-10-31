@@ -176,8 +176,6 @@ protected:
 	D3DXCOLOR m_SpecularMaterial;
 	float m_SpecularPower;
 
-
-
 	//Textures
 	ID3D10ShaderResourceView *m_pDiffuseTexture;
 };

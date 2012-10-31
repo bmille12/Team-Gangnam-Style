@@ -1,7 +1,7 @@
 #include "GameApplication.h"
 #include "GameObject.h"
 
-#include "ModelLoader.h"
+
 #include "Input.h"
 #include "Keyboard.h"
 
@@ -67,24 +67,19 @@ bool CGameApplication::initGame()
 	CGameObject *pTestGameObject=new CGameObject();
 	//Set the name
 	pTestGameObject->setName("Test");
+	//Position
 	pTestGameObject->getTransform()->setPosition(0.0f,0.0f,10.0f);
-	pTestGameObject->getTransform()->setScale(1.0f,1.0f,1.0f);
-	
 	//create material
 	CMaterialComponent *pMaterial=new CMaterialComponent();
 	pMaterial->SetRenderingDevice(m_pD3D10Device);
 	pMaterial->setEffectFilename("Specular.fx");
 	pMaterial->setAmbientMaterialColour(D3DXCOLOR(0.5f,0.5f,0.5f,1.0f));
+	pTestGameObject->addComponent(pMaterial);
 
-	
-	//Create geometry
-	CModelLoader modelloader;
+	//Create Mesh
 	CMeshComponent *pMesh=modelloader.loadModelFromFile(m_pD3D10Device,"armoredrecon.fbx");
 	//CMeshComponent *pMesh=modelloader.createCube(m_pD3D10Device,10.0f,10.0f,10.0f);
 	pMesh->SetRenderingDevice(m_pD3D10Device);
-
-	//Add component
-	pTestGameObject->addComponent(pMaterial);
 	pTestGameObject->addComponent(pMesh);
 	//add the game object
 	m_pGameObjectManager->addGameObject(pTestGameObject);
@@ -92,7 +87,6 @@ bool CGameApplication::initGame()
 	CGameObject *pCameraGameObject=new CGameObject();
 	pCameraGameObject->getTransform()->setPosition(0.0f,0.0f,-5.0f);
 	pCameraGameObject->setName("Camera");
-
 
 	D3D10_VIEWPORT vp;
 	UINT numViewports=1;
@@ -120,7 +114,7 @@ bool CGameApplication::initGame()
 
 	m_pGameObjectManager->setMainLight(pLightComponent);
 
-	//init
+	//init, this must be called after we have created all game objects
 	m_pGameObjectManager->init();
 	
 	m_Timer.start();
@@ -190,10 +184,14 @@ void CGameApplication::render()
 				//we have a geometry
 				if (pMesh)
 				{
+					//Loop through all the subsets in the mesh
 					for (int i=0;i<pMesh->getTotalNumberOfSubsets();i++)
 					{
+						//grab one of the subset
 						CGeometry *pSubset=pMesh->getSubset(i);
+						//bind the buffers contained in the subset
 						pSubset->bindBuffers();
+						//draw
 						m_pD3D10Device->DrawIndexed(pSubset->getNumberOfIndices(),0,0);
 					}
 				}
@@ -210,13 +208,30 @@ void CGameApplication::update()
 {
 	m_Timer.update();
 
-	if (CInput::getInstance().getKeyboard()->isKeyDown((int)'A'))
+	if (CInput::getInstance().getKeyboard()->isKeyDown((int)'W'))
 	{
 		//play sound
 		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Test")->getTransform();
 		pTransform->rotate(m_Timer.getElapsedTime(),0.0f,0.0f);
 	}
-
+	else if (CInput::getInstance().getKeyboard()->isKeyDown((int)'S'))
+	{
+		//play sound
+		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Test")->getTransform();
+		pTransform->rotate(m_Timer.getElapsedTime()*-1,0.0f,0.0f);
+	}
+	if (CInput::getInstance().getKeyboard()->isKeyDown((int)'A'))
+	{
+		//play sound
+		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Test")->getTransform();
+		pTransform->rotate(0.0f,m_Timer.getElapsedTime(),0.0f);
+	}
+	else if (CInput::getInstance().getKeyboard()->isKeyDown((int)'D'))
+	{
+		//play sound
+		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Test")->getTransform();
+		pTransform->rotate(0.0f,m_Timer.getElapsedTime()*-1,0.0f);
+	}
 	m_pGameObjectManager->update(m_Timer.getElapsedTime());
 
 	

@@ -12,6 +12,8 @@
 #include "DirectionLightComponent.h"
 #include "MeshComponent.h"
 
+#include "ModelLoader.h"
+
 #include <vector>
 
 using namespace std;
@@ -45,4 +47,6 @@ private:
 	
 	//Get Game Object Manager
 	CGameObjectManager *m_pGameObjectManager;
+
+	CModelLoader modelloader;
 };
