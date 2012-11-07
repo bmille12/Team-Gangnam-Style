@@ -11,6 +11,7 @@ CMaterialComponent::CMaterialComponent()
 	m_pSpecularTexture=NULL;
 	m_pBumpTexture=NULL;
 	m_pParallaxTexture=NULL;
+	m_pEnvironmentTexture=NULL;
 	m_EffectName="";
 	m_TechniqueName="Render";
 	ZeroMemory(&m_TechniqueDesc,sizeof(D3D10_TECHNIQUE_DESC));
@@ -44,6 +45,11 @@ CMaterialComponent::~CMaterialComponent()
 	{
 		m_pParallaxTexture->Release();
 		m_pParallaxTexture=NULL;
+	}
+	if (m_pEnvironmentTexture)
+	{
+		m_pEnvironmentTexture->Release();
+		m_pEnvironmentTexture=NULL;
 	}
 	//vertex layout
 	if (m_pVertexLayout)
@@ -163,6 +169,15 @@ void CMaterialComponent::loadSpecularTexture(const string& filename)
 	}
 }
 
+void CMaterialComponent::loadEnvironmentTexture(const string& filename)
+{
+	if (FAILED(D3DX10CreateShaderResourceViewFromFileA(m_pD3D10Device,
+		filename.c_str(), NULL, NULL,&m_pEnvironmentTexture , NULL)))
+	{
+		OutputDebugStringA("Can't load Texture");
+	}
+}
+
 //init
 void CMaterialComponent::init()
 {
@@ -190,6 +205,7 @@ void CMaterialComponent::init()
 	m_pSpecularTextureVariable=m_pEffect->GetVariableByName("specularMap")->AsShaderResource();
 	m_pBumpTextureVariable=m_pEffect->GetVariableByName("bumpMap")->AsShaderResource();
 	m_pParallaxTextureVariable=m_pEffect->GetVariableByName("heightMap")->AsShaderResource();
+	m_pEnvironmentTextureVariable=m_pEffect->GetVariableByName("envMap")->AsShaderResource();
 
 	//lights
 	m_pAmbientLightColourVariable=m_pEffect->GetVariableByName("ambientLightColour")->AsVector();

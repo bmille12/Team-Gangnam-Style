@@ -122,6 +122,7 @@
     <None Include="Bumpmapping.fx" />
     <None Include="diffuse.fx" />
     <None Include="DirectionalLight.fx" />
+    <None Include="Environment.fx" />
     <None Include="Parallax.fx" />
     <None Include="ScreenSpace.fx" />
     <None Include="Specular.fx" />
