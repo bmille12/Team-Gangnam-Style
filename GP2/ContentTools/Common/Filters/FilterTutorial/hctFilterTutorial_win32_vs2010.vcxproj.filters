@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Classes">
+        <UniqueIdentifier>{6EA0B068-0A31-4BAE-AB16-728C7A926745}</UniqueIdentifier>
+        </Filter>
+    <Filter Include="Classes\Reflections">
+        <UniqueIdentifier>{41EF5951-A15B-4E85-A8F3-ED60BF6039BA}</UniqueIdentifier>
+        </Filter>
+    <Filter Include="ConvertToPhantomAction">
+        <UniqueIdentifier>{314396E9-0A4E-45CA-A4C0-355DEA13FB04}</UniqueIdentifier>
+        </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="hctFilterTutorial.cpp">
+        <Filter></Filter>
+        </ClCompile>
+    <None Include="hctFilterTutorial.def">
+        <Filter></Filter>
+        </None>
+    <ClInclude Include="hctFilterTutorial.h">
+        <Filter></Filter>
+        </ClInclude>
+    <ResourceCompile Include="hctFilterTutorial.rc">
+        <Filter></Filter>
+        </ResourceCompile>
+    <ClInclude Include="hctFilterTutorialClasses.h">
+        <Filter></Filter>
+        </ClInclude>
+    <ClCompile Include="hctFilterTutorialDll.cpp">
+        <Filter></Filter>
+        </ClCompile>
+    <ClInclude Include="hctFilterTutorialDll.h">
+        <Filter></Filter>
+        </ClInclude>
+    <ClInclude Include="resource.h">
+        <Filter></Filter>
+        </ClInclude>
+    <ClCompile Include="Classes\Reflections\hctConvertToPhantomActionOptionsReflection.cpp">
+        <Filter>Classes\Reflections</Filter>
+        </ClCompile>
+    <ClCompile Include="Classes\Reflections\MyPhantomShapeReflection.cpp">
+        <Filter>Classes\Reflections</Filter>
+        </ClCompile>
+    <ClCompile Include="ConvertToPhantomAction\hctConvertToPhantomActionFilter.cpp">
+        <Filter>ConvertToPhantomAction</Filter>
+        </ClCompile>
+    <ClInclude Include="ConvertToPhantomAction\hctConvertToPhantomActionFilter.h">
+        <Filter>ConvertToPhantomAction</Filter>
+        </ClInclude>
+    <ClCompile Include="ConvertToPhantomAction\hctConvertToPhantomActionFilter_Dialog.cpp">
+        <Filter>ConvertToPhantomAction</Filter>
+        </ClCompile>
+    <ClCompile Include="ConvertToPhantomAction\hctConvertToPhantomActionFilter_Options.cpp">
+        <Filter>ConvertToPhantomAction</Filter>
+        </ClCompile>
+    <ClInclude Include="ConvertToPhantomAction\hctConvertToPhantomActionOptions.h">
+        <Filter>ConvertToPhantomAction</Filter>
+        </ClInclude>
+    <ClCompile Include="ConvertToPhantomAction\MyPhantomShape.cpp">
+        <Filter>ConvertToPhantomAction</Filter>
+        </ClCompile>
+    <ClInclude Include="ConvertToPhantomAction\MyPhantomShape.h">
+        <Filter>ConvertToPhantomAction</Filter>
+        </ClInclude>
+  </ItemGroup>
+</Project>

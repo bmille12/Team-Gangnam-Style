@@ -3,7 +3,7 @@
 #include "Timer.h"
 #include <D3D10.h>
 #include <D3DX10.h>
-#include <fmod.hpp>
+//#include <fmod.hpp>
 
 #include "GameObjectManager.h"
 
@@ -11,12 +11,12 @@
 #include "GeometryComponent.h"
 #include "TransformComponent.h"
 #include "CameraComponent.h"
-#include "AudioListenerComponent.h"
+//#include "AudioListenerComponent.h"
 
 #include <vector>
 
 using namespace std;
-using namespace FMOD;
+//using namespace FMOD;
 
 class CGameApplication
 {
@@ -49,5 +49,5 @@ private:
 	CGameObjectManager *m_pGameObjectManager;
 
 	//Audio
-	System *m_pAudioSystem;
+	//System *m_pAudioSystem;
 };

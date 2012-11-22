@@ -99,12 +99,6 @@
     <ClCompile Include="BodyComponent.cpp">
       <Filter>Components\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="AudioListenerComponent.cpp">
-      <Filter>Components\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSourceComponent.cpp">
-      <Filter>Components\Audio</Filter>
-    </ClCompile>
     <ClCompile Include="MaterialComponent.cpp">
       <Filter>Components\Material</Filter>
     </ClCompile>
