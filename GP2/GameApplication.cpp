@@ -58,8 +58,6 @@ bool CGameApplication::init()
 		return false;
 	if (!initInput())
 		return false;
-	if (!initAudio())
-		return false;
 	if (!initGame())
 		return false;
 	return true;

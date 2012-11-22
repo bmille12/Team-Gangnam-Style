@@ -29,7 +29,6 @@ private:
 	bool initInput();
 	bool initGame();
 	bool initGraphics();
-	bool initAudio();
 	bool initWindow();
 	void render();
 	void update();
