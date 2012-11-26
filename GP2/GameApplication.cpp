@@ -70,9 +70,10 @@ bool CGameApplication::initGame()
     m_pD3D10Device->IASetPrimitiveTopology( D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST );	
 
 	//Create Game Object
-	CGameObject *pTestGameObject=new CGameObject();
+	//This will be our terrain - a simple plane for now
+	CGameObject *pTerrain=new CGameObject();
 	//Set the name
-	pTestGameObject->setName("Test");
+	pTerrain->setName("Terrain");
 	
 	//create material
 	CMaterialComponent *pMaterial=new CMaterialComponent();
@@ -83,7 +84,7 @@ bool CGameApplication::initGame()
 	//Create geometry
 	CModelLoader modelloader;
 	//CGeometryComponent *pGeometry=modelloader.loadModelFromFile(m_pD3D10Device,"humanoid.fbx");
-	CGeometryComponent *pGeometry=modelloader.createCube(m_pD3D10Device,2.0f,2.0f,2.0f);
+	CGeometryComponent *pGeometry=modelloader.createCube(m_pD3D10Device,4.0f,0.1f,4.0f);
 	pGeometry->SetRenderingDevice(m_pD3D10Device);
 
 	CGameObject *pCameraGameObject=new CGameObject();
@@ -104,7 +105,7 @@ bool CGameApplication::initGame()
 	pCamera->setNearClip(0.1f);
 
 	pCameraGameObject->addComponent(pCamera);
-	pCameraGameObject->getTransform()->setPosition(0.0f,0.0f,-5.0f);
+	pCameraGameObject->getTransform()->setPosition(0.0f,4.0f,-5.0f);
 
 	//CAudioListenerComponent *pListener=new CAudioListenerComponent();
 	//pListener->setAudioSystem(m_pAudioSystem);
@@ -112,10 +113,10 @@ bool CGameApplication::initGame()
 	//pCameraGameObject->addComponent(pListener);
 
 	//Add component
-	pTestGameObject->addComponent(pMaterial);
-	pTestGameObject->addComponent(pGeometry);
+	pTerrain->addComponent(pMaterial);
+	pTerrain->addComponent(pGeometry);
 	//add the game object
-	m_pGameObjectManager->addGameObject(pTestGameObject);
+	m_pGameObjectManager->addGameObject(pTerrain);
 	m_pGameObjectManager->addGameObject(pCameraGameObject);
 
 	//init
@@ -200,7 +201,7 @@ void CGameApplication::update()
 	if (CInput::getInstance().getKeyboard()->isKeyDown((int)'A'))
 	{
 		//play sound
-		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Test")->getTransform();
+		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Camera")->getTransform();
 		pTransform->rotate(m_Timer.getElapsedTime(),0.0f,0.0f);
 	}
 

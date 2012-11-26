@@ -92,6 +92,7 @@
     <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="Spawner.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Win32Window.cpp" />
   </ItemGroup>
@@ -115,6 +116,7 @@
     <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Physics.h" />
+    <ClInclude Include="Spawner.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TransformComponent.h" />
     <ClInclude Include="Vertex.h" />

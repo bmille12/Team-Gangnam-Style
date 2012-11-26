@@ -10,6 +10,7 @@ CGameObject::CGameObject()
 	m_pTransform=new CTransformComponent();
 	//attach it to the game object
 	addComponent(m_pTransform);
+	health = 100;
 }
 
 CGameObject::~CGameObject()
@@ -60,6 +61,18 @@ void CGameObject::render()
 	for (vector<IComponent*>::iterator iter=m_Components.begin();iter!=m_Components.end();iter++)
 	{
 		(*iter)->render();
+	}
+}
+
+void CGameObject::updateHealth(int i)
+{
+	//Function will be used to update object health
+	//Every object will have a health value, allowing every object
+	//to be treated as if it were destroyable
+	health+=i;
+	if ( health <= 0 )
+	{
+		//Destroy object - use deconstructor?
 	}
 }
 

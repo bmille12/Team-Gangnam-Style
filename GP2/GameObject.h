@@ -38,6 +38,8 @@ public:
 	void init();
 	//render
 	void render();
+	//Update health
+	void updateHealth(int i);
 	//update
 	void update(float elapsedTime);
 
@@ -61,4 +63,6 @@ private:
 	vector<IComponent*> m_Components;
 	//name
 	string m_strName;
+	//Object health
+	int health;
 };
