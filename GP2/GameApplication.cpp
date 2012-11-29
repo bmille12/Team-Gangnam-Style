@@ -69,26 +69,8 @@ bool CGameApplication::initGame()
     //http://msdn.microsoft.com/en-us/library/bb173590%28v=VS.85%29.aspx - BMD
     m_pD3D10Device->IASetPrimitiveTopology( D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST );	
 
-	//Create Game Object
-	//This will be our terrain - a simple plane for now
-	CGameObject *pTerrain=new CGameObject();
-	//Set the name
-	pTerrain->setName("Terrain");
-	
-	//create material
-	CMaterialComponent *pMaterial=new CMaterialComponent();
-	pMaterial->SetRenderingDevice(m_pD3D10Device);
-	pMaterial->loadDiffuseTexture("face.png");
-	pMaterial->setEffectFilename("Transform.fx");
-	
-	//Create geometry
-	CModelLoader modelloader;
-	//CGeometryComponent *pGeometry=modelloader.loadModelFromFile(m_pD3D10Device,"humanoid.fbx");
-	CGeometryComponent *pGeometry=modelloader.createCube(m_pD3D10Device,4.0f,0.1f,4.0f);
-	pGeometry->SetRenderingDevice(m_pD3D10Device);
-
 	CGameObject *pCameraGameObject=new CGameObject();
-	pCameraGameObject->getTransform()->setPosition(0.0f,0.0f,0.0f);
+	pCameraGameObject->getTransform()->setPosition(0,4,0);
 	pCameraGameObject->setName("Camera");
 
 
@@ -106,6 +88,39 @@ bool CGameApplication::initGame()
 
 	pCameraGameObject->addComponent(pCamera);
 	pCameraGameObject->getTransform()->setPosition(0.0f,4.0f,-5.0f);
+		//add the game object
+	m_pGameObjectManager->addGameObject(createObject("pTerrain","face.png","transform.fx",0,0,0,4,1,4));
+	m_pGameObjectManager->addGameObject(createObject("pPlayer","face.png","transform.fx",1,1,1,1,10,1));
+	m_pGameObjectManager->addGameObject(pCameraGameObject);
+	//init
+	m_pGameObjectManager->init();
+	
+	m_Timer.start();
+	return true;
+}
+
+CGameObject* CGameApplication::createObject(string name, string diffuse, string effect, float oX, float oY, float oZ
+		, float gX, float gY, float gZ)
+{
+	//Create Game Object
+	//This will be our terrain - a simple plane for now
+	CGameObject *pObject=new CGameObject();
+	//Set the name
+	pObject->setName(name);
+	
+	//create material
+	CMaterialComponent *pMaterial=new CMaterialComponent();
+	pMaterial->SetRenderingDevice(m_pD3D10Device);
+	pMaterial->loadDiffuseTexture("face.png");
+	pMaterial->setEffectFilename("Transform.fx");
+	
+	//Create geometry
+	CModelLoader modelloader;
+	//CGeometryComponent *pGeometry=modelloader.loadModelFromFile(m_pD3D10Device,"humanoid.fbx");
+	CGeometryComponent *pGeometry=modelloader.createCube(m_pD3D10Device,gX,gY,gZ);
+	pGeometry->SetRenderingDevice(m_pD3D10Device);
+
+	
 
 	//CAudioListenerComponent *pListener=new CAudioListenerComponent();
 	//pListener->setAudioSystem(m_pAudioSystem);
@@ -113,17 +128,10 @@ bool CGameApplication::initGame()
 	//pCameraGameObject->addComponent(pListener);
 
 	//Add component
-	pTerrain->addComponent(pMaterial);
-	pTerrain->addComponent(pGeometry);
-	//add the game object
-	m_pGameObjectManager->addGameObject(pTerrain);
-	m_pGameObjectManager->addGameObject(pCameraGameObject);
+	pObject->addComponent(pMaterial);
+	pObject->addComponent(pGeometry);
 
-	//init
-	m_pGameObjectManager->init();
-	
-	m_Timer.start();
-	return true;
+	return pObject;
 }
 
 void CGameApplication::run()
@@ -384,7 +392,7 @@ bool CGameApplication::initGraphics()
 bool CGameApplication::initWindow()
 {
 	m_pWindow=new CWin32Window();
-	if (!m_pWindow->init(TEXT("Lab 1 - Triangle"),800,640,false))
+	if (!m_pWindow->init(TEXT("Team Gangnam Style"),800,640,false))
 		return false;
 	return true;
 }

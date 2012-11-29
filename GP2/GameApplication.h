@@ -32,6 +32,8 @@ private:
 	bool initWindow();
 	void render();
 	void update();
+	CGameObject* createObject(string name, string diffuse, string effect, float oX, float oY, float oZ
+		, float gX, float gY, float gZ);
 private:
 	//Graphics
 	ID3D10Device * m_pD3D10Device;

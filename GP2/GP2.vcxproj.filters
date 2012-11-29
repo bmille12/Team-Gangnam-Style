@@ -111,9 +111,6 @@
     <ClCompile Include="LightComponent.cpp">
       <Filter>Components\Lights</Filter>
     </ClCompile>
-    <ClCompile Include="Spawner.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Win32Window.h">
@@ -184,9 +181,6 @@
     </ClInclude>
     <ClInclude Include="DirectionalLightComponent.h">
       <Filter>Components\Lights</Filter>
-    </ClInclude>
-    <ClInclude Include="Spawner.h">
-      <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
