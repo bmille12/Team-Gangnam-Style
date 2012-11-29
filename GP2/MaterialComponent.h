@@ -57,6 +57,7 @@ public:
 	void loadSpecularTexture(const string& filename);
 	void loadBumpTexture(const string& filename);
 	void loadParallaxTexture(const string& filename);
+	void loadEnvironmentTexture(const string& filename);
 
 	void setTextures()
 	{
@@ -64,6 +65,9 @@ public:
 		m_pSpecularTextureVariable->SetResource(m_pSpecularTexture);
 		m_pBumpTextureVariable->SetResource(m_pBumpTexture);
 		m_pParallaxTextureVariable->SetResource(m_pParallaxTexture);
+		
+		m_pEnvironmentTextureVariable->SetResource(m_pEnvironmentTexture);
+
 		if (m_pDiffuseTexture)
 			m_pUseDiffuseTextureVariable->SetBool(TRUE);
 		if (m_pSpecularTexture)
@@ -173,6 +177,7 @@ protected:
 	ID3D10EffectShaderResourceVariable *m_pSpecularTextureVariable;
 	ID3D10EffectShaderResourceVariable *m_pBumpTextureVariable;
 	ID3D10EffectShaderResourceVariable *m_pParallaxTextureVariable;
+	ID3D10EffectShaderResourceVariable *m_pEnvironmentTextureVariable;
 
 	//Light
 	ID3D10EffectVectorVariable *m_pAmbientLightColourVariable;
@@ -205,4 +210,5 @@ protected:
 	ID3D10ShaderResourceView *m_pSpecularTexture;
 	ID3D10ShaderResourceView *m_pBumpTexture;
 	ID3D10ShaderResourceView *m_pParallaxTexture;
+	ID3D10ShaderResourceView *m_pEnvironmentTexture;
 };

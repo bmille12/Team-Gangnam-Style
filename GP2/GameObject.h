@@ -16,6 +16,8 @@ class CGameObject
 public:
 	//Constructor
 	CGameObject();
+	//Constructor with health
+	CGameObject(int health);
 	//Deconstructor
 	~CGameObject();
 
@@ -40,7 +42,8 @@ public:
 	void render();
 	//update
 	void update(float elapsedTime);
-
+	int updateHealth(int x);
+	int health;
 	//set name
 	void setName(const string& name)
 	{
