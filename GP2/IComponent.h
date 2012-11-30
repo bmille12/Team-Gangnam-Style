@@ -42,7 +42,8 @@ public:
 
 	//set the rendering device
 	virtual void SetRenderingDevice(ID3D10Device *pDevice)=0;
-
+	//Set lookat
+	//virtual void setLookAt(float x,float y, float z)=0;
 };
 
 //BaseComponent which implements the Interface

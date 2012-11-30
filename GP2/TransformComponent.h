@@ -68,6 +68,18 @@ public:
 	{
 		return m_vecPosition;
 	};
+		float getPositionX()
+	{
+		return m_vecPosition.x;
+	};
+	float getPositionY()
+	{
+		return m_vecPosition.y;
+	};
+	float getPositionZ()
+	{
+		return m_vecPosition.z;
+	};
 
 	//get world
 	D3DXMATRIX& getWorld()

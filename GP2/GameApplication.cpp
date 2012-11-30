@@ -63,6 +63,7 @@ bool CGameApplication::initGame()
     //http://msdn.microsoft.com/en-us/library/bb173590%28v=VS.85%29.aspx - BMD
     m_pD3D10Device->IASetPrimitiveTopology( D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST );	
 
+<<<<<<< HEAD
 
 	CGameObject *pTestGameObject=new CGameObject();
 	//Set the name
@@ -104,34 +105,22 @@ bool CGameApplication::initGame()
 	pTestGameObject->addComponent(pMesh);
 	//add the game object
 	m_pGameObjectManager->addGameObject(pTestGameObject);
+=======
 
-	pTestGameObject=new CGameObject();
-	//Set the name
-	pTestGameObject->setName("Test2");
-	//Position
-	pTestGameObject->getTransform()->setPosition(5.0f,0.0f,10.0f);
-	//create material
-	pMaterial=new CMaterialComponent();
-	pMaterial->SetRenderingDevice(m_pD3D10Device);
-	pMaterial->setEffectFilename("DirectionalLight.fx");
-	pMaterial->setAmbientMaterialColour(D3DXCOLOR(0.5f,0.5f,0.5f,1.0f));
-	pMaterial->loadDiffuseTexture("armoredrecon_diff.png");
-	pMaterial->loadSpecularTexture("armoredrecon_spec.png");
-	pTestGameObject->addComponent(pMaterial);
+>>>>>>> Working on top-view, other changes
 
-	//Create Mesh
-	pMesh=modelloader.loadModelFromFile(m_pD3D10Device,"armoredrecon.fbx");
-	//CMeshComponent *pMesh=modelloader.createCube(m_pD3D10Device,10.0f,10.0f,10.0f);
-	pMesh->SetRenderingDevice(m_pD3D10Device);
-	pTestGameObject->addComponent(pMesh);
-	//add the game object
-	m_pGameObjectManager->addGameObject(pTestGameObject);
+	//add the game objects
+	m_pGameObjectManager->addGameObject(createSky("Sky","sphere.fbx","Environment.fx","Mars.dds"));
+	m_pGameObjectManager->addGameObject(createTerrain("Terrain","Transform.fx","Face.png",2,1,4));
+	m_pGameObjectManager->addGameObject(createTank("Player","armoredrecon.fbx","Parallax.fx","armoredrecon_diff.png","armoredrecon_spec",
+	"armoredrecon_N.png","armoredrecon_Height.png",0.0f,0.0f,10.0f));
+
 
 	//Create Mesh
 
 
 	CGameObject *pCameraGameObject=new CGameObject();
-	pCameraGameObject->getTransform()->setPosition(0.0f,0.0f,-5.0f);
+	pCameraGameObject->getTransform()->setPosition(0.0f,5.0f,-5.0f);
 	pCameraGameObject->setName("Camera");
 
 	D3D10_VIEWPORT vp;
@@ -177,6 +166,70 @@ void CGameApplication::run()
 			render();
 		}
 	}
+}
+
+CGameObject* CGameApplication::createTerrain(string name,string effect,string texture,float xsize,float ysize,float zsize)
+{
+	CGameObject *pObject=new CGameObject();
+	//Set the name
+	pObject->setName(name);
+	CMeshComponent *pMesh=modelloader.createCube(m_pD3D10Device,xsize,ysize,zsize);
+	pMesh->SetRenderingDevice(m_pD3D10Device);
+	CMaterialComponent *pMaterial=new CMaterialComponent();
+	pMaterial=new CMaterialComponent();
+	pMaterial->SetRenderingDevice(m_pD3D10Device);
+	pMaterial->setEffectFilename(effect);
+	pMaterial->loadEnvironmentTexture(texture);
+	pObject->addComponent(pMaterial);
+	pObject->addComponent(pMesh);
+	pObject->getTransform()->setPosition(0.0f,-1.0f,0.0f);
+	return pObject;
+}
+
+CGameObject* CGameApplication::createSky(string name, string model, string effect, string texture)
+{
+	CGameObject *pObject=new CGameObject();
+	//Set the name
+	pObject->setName(name);
+	CMeshComponent *pMesh=modelloader.loadModelFromFile(m_pD3D10Device,model);
+	//CMeshComponent *pMesh=modelloader.createCube(m_pD3D10Device,10.0f,10.0f,10.0f);
+	pMesh->SetRenderingDevice(m_pD3D10Device);
+	CMaterialComponent *pMaterial=new CMaterialComponent();
+	pMaterial=new CMaterialComponent();
+	pMaterial->SetRenderingDevice(m_pD3D10Device);
+	pMaterial->setEffectFilename(effect);
+	pMaterial->loadEnvironmentTexture(texture);
+	pObject->addComponent(pMaterial);
+	pObject->addComponent(pMesh);
+	return pObject;
+}
+
+CGameObject* CGameApplication::createTank(string name, string model, string effect, string textureD, string textureS
+	, string textureB, string textureP, float xpos, float ypos, float zpos)
+{
+	CGameObject *pObject=new CGameObject();
+	//Set the name
+	pObject->setName(name);
+	//Position
+	pObject->getTransform()->setPosition(xpos,ypos,zpos);
+	//create material
+	CMaterialComponent *pMaterial=new CMaterialComponent();
+	pMaterial->SetRenderingDevice(m_pD3D10Device);
+	pMaterial->setEffectFilename(effect);
+	pMaterial->setAmbientMaterialColour(D3DXCOLOR(0.2f,0.2f,0.2f,1.0f));
+	pMaterial->loadDiffuseTexture(textureD);
+	pMaterial->loadSpecularTexture(textureS);
+	pMaterial->loadBumpTexture(textureB);
+	pMaterial->loadParallaxTexture(textureP);
+	pObject->addComponent(pMaterial);
+
+	//Create Mesh
+	CMeshComponent *pMesh=modelloader.loadModelFromFile(m_pD3D10Device,model);
+	//CMeshComponent *pMesh=modelloader.createCube(m_pD3D10Device,10.0f,10.0f,10.0f);
+	pMesh->SetRenderingDevice(m_pD3D10Device);
+	pObject->addComponent(pMesh);
+	//add the game object
+	return pObject;
 }
 
 void CGameApplication::render()
@@ -257,26 +310,43 @@ void CGameApplication::update()
 	if (CInput::getInstance().getKeyboard()->isKeyDown((int)'W'))
 	{
 		//play sound
-		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Test")->getTransform();
-		pTransform->rotate(m_Timer.getElapsedTime(),0.0f,0.0f);
+		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Player")->getTransform();
+		pTransform->translate(0.0f,0.0f,m_Timer.getElapsedTime()*4);
 	}
 	else if (CInput::getInstance().getKeyboard()->isKeyDown((int)'S'))
 	{
 		//play sound
-		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Test")->getTransform();
-		pTransform->rotate(m_Timer.getElapsedTime()*-1,0.0f,0.0f);
+		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Player")->getTransform();
+		pTransform->translate(0.0f,0.0f,m_Timer.getElapsedTime()*-4);
+
+
 	}
-	if (CInput::getInstance().getKeyboard()->isKeyDown((int)'A'))
+	if (CInput::getInstance().getKeyboard()->isKeyDown((int)'D'))
 	{
 		//play sound
-		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Test")->getTransform();
-		pTransform->rotate(0.0f,m_Timer.getElapsedTime(),0.0f);
+		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Player")->getTransform();
+		pTransform->rotate(0.0f,m_Timer.getElapsedTime()*2,0.0f);
+		CTransformComponent * pTransform2=m_pGameObjectManager->findGameObject("Sky")->getTransform();
+		pTransform2->rotate(0.0f,m_Timer.getElapsedTime()*2,0.0f);
 	}
-	else if (CInput::getInstance().getKeyboard()->isKeyDown((int)'D'))
+	else if (CInput::getInstance().getKeyboard()->isKeyDown((int)'A'))
 	{
 		//play sound
-		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Test")->getTransform();
-		pTransform->rotate(0.0f,m_Timer.getElapsedTime()*-1,0.0f);
+		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Player")->getTransform();
+		pTransform->rotate(0.0f,m_Timer.getElapsedTime()*-2,0.0f);
+		CTransformComponent * pTransform2=m_pGameObjectManager->findGameObject("Sky")->getTransform();
+		pTransform2->rotate(0.0f,m_Timer.getElapsedTime()*-2,0.0f);
+	}
+	if (CInput::getInstance().getKeyboard()->isKeyDown((int)'K'))
+	{
+		
+		int kill=m_pGameObjectManager->findGameObject("Player")->updateHealth(-100);
+		if (kill = 0)
+		{
+			//remove from gameobjectmanager?
+			//or delete game object directly - may cause problems
+			//m_pGameObjectManager->clear("Player");
+		}
 	}
 	m_pGameObjectManager->update(m_Timer.getElapsedTime());
 
@@ -443,7 +513,7 @@ bool CGameApplication::initGraphics()
 bool CGameApplication::initWindow()
 {
 	m_pWindow=new CWin32Window();
-	if (!m_pWindow->init(TEXT("Games Programming"),800,640,false))
+	if (!m_pWindow->init(TEXT("Team Gangnam Style"),800,640,false))
 		return false;
 	return true;
 }

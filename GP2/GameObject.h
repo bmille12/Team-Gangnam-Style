@@ -7,6 +7,8 @@ class CTransformComponent;
 #include <map>
 #include <vector>
 #include <string>
+#include <D3D10.h>
+#include <D3DX10.h>
 
 using namespace std;
 
@@ -16,6 +18,8 @@ class CGameObject
 public:
 	//Constructor
 	CGameObject();
+	//Constructor with health
+	CGameObject(int health);
 	//Deconstructor
 	~CGameObject();
 
@@ -40,7 +44,8 @@ public:
 	void render();
 	//update
 	void update(float elapsedTime);
-
+	int updateHealth(int x);
+	int health;
 	//set name
 	void setName(const string& name)
 	{

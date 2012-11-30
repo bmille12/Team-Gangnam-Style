@@ -10,6 +10,15 @@ CGameObject::CGameObject()
 	m_pTransform=new CTransformComponent();
 	//attach it to the game object
 	addComponent(m_pTransform);
+	health=100;
+}
+CGameObject::CGameObject(int Health)
+{
+	//Create transform component
+	m_pTransform=new CTransformComponent();
+	//attach it to the game object
+	addComponent(m_pTransform);
+	health = Health;
 }
 
 CGameObject::~CGameObject()
@@ -42,6 +51,19 @@ void CGameObject::addComponent(IComponent * pComponent)
 	//set the parent of the component
 	pComponent->setParent(this);
 };
+
+int CGameObject::updateHealth(int x)
+{
+	health+=x;
+	if ( health <1 )
+	{
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
+}
 
 
 //init, cycle through the vector and call init method of the component

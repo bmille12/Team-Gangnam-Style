@@ -29,6 +29,10 @@ private:
 	bool initInput();
 	bool initGame();
 	bool initGraphics();
+	CGameObject* createSky(string name, string model, string effect, string texture);
+	CGameObject* createTank(string name, string model, string effect, string textureD, string textureS
+	, string textureB, string textureP, float xpos, float ypos, float zpos);
+	CGameObject* createTerrain(string name,string effect,string texture,float xsize,float ysize,float zsize);
 
 	bool initWindow();
 	void render();
