@@ -79,37 +79,30 @@ bool CGameApplication::initGame()
 	//Next, the terrain
 	m_pGameObjectManager->addGameObject(createTerrain("Terrain","Specular.fx","face.png",8,1,60));
 	//Next, the player tank
-	m_pGameObjectManager->addGameObject(createModel("Player","Tank1.fbx","DirectionLight.fx","armoredrecon_diff.png","armoredrecon_spec",
-	"armoredrecon_N.png","armoredrecon_Height.png",0.0f,-10.0f,0.0f));
+	m_pGameObjectManager->addGameObject(createModel("Player","Tank1.fbx","DirectionLight.fx","Tank1_DF.tga","Tank1_S.tga",
+	"Tank1_N.tga","Tank1_H.tga",0.0f,-10.0f,0.0f));
 	//Finally, the obstacle - this will soon be done in update() and loop for constantly spawning enemies
 	m_pGameObjectManager->addGameObject(createModel("Statue","humanoid.fbx","Parallax.fx", "armoredrecon_diff.png","armoredrecon_spec",
 	"armoredrecon_N.png","armoredrecon_Height.png", 0,0,140));
-	//Next loop will spawn obstacles
-	//While there are less than X obstacles on the field
-	//	while ( obstacleCount < 4 )
-	//	{
-	//// ---X will change based on level
-	////Spawn a new obstacle
-	//		//stringy2 = convertInt(obstacleCount);
-	//		//stringy = stringy+stringy2;
-
-	//		m_pGameObjectManager->addGameObject(createModel("obstacle","Tank1.fbx","DirectionLight.fx","armoredrecon_diff.png","armoredrecon_spec",
-	//"armoredrecon_N.png","armoredrecon_Height.png",0.0f,-10.0f,-100.0f));
-	//		//iterate obstacleCount
-	//		obstacleCount++;
-	////end while loop
-	//	}
-	//	obstacleCount =0;
-	m_pGameObjectManager->addGameObject(createModel("Obstacle0","Tank1.fbx","DirectionLight.fx","armoredrecon_diff.png","armoredrecon_spec",
-	"armoredrecon_N.png","armoredrecon_Height.png",0.0f,-10.0f,-100.0f));
-	m_pGameObjectManager->addGameObject(createModel("Obstacle1","Tank1.fbx","DirectionLight.fx","armoredrecon_diff.png","armoredrecon_spec",
-	"armoredrecon_N.png","armoredrecon_Height.png",0.0f,-10.0f,-100.0f));
-	m_pGameObjectManager->addGameObject(createModel("Obstacle2","Tank1.fbx","DirectionLight.fx","armoredrecon_diff.png","armoredrecon_spec",
-	"armoredrecon_N.png","armoredrecon_Height.png",0.0f,-10.0f,-100.0f));
-	m_pGameObjectManager->addGameObject(createModel("Obstacle3","Tank1.fbx","DirectionLight.fx","armoredrecon_diff.png","armoredrecon_spec",
-	"armoredrecon_N.png","armoredrecon_Height.png",0.0f,-10.0f,-100.0f));
+	
+	m_pGameObjectManager->addGameObject(createModel("Obstacle0","Tank1.fbx","DirectionLight.fx","Tank1_DF.tga","Tank1_S.tga",
+	"Tank1_N.tga","Tank1_H.tga",0.0f,-10.0f,-100.0f));
+	m_pGameObjectManager->addGameObject(createModel("Obstacle1","Tank2.fbx","DirectionLight.fx","Tank2_DF.tga","Tank2_S.tga",
+	"Tank2_N.tga","Tank1_H.tga",0.0f,-10.0f,-100.0f));
+	m_pGameObjectManager->addGameObject(createModel("Obstacle2","barrel.fbx","DirectionLight.fx","barrel_color_01.png","barrel_spec_01",
+	"barrel_n_01.png","armoredrecon_Height.png",0.0f,-10.0f,-100.0f));
+		m_pGameObjectManager->addGameObject(createModel("Obstacle3","Ammo_box.fbx","DirectionLight.fx","ammo_box_color_01.png","ammo_box_spec_01",
+	"ammo_box_nmap_01.png","armoredrecon_Height.png",0.0f,-10.0f,-100.0f));
 	m_pGameObjectManager->addGameObject(createModel("Obstacle4","Tank1.fbx","DirectionLight.fx","armoredrecon_diff.png","armoredrecon_spec",
 	"armoredrecon_N.png","armoredrecon_Height.png",0.0f,-10.0f,-100.0f));
+
+	//Scale models that need it
+	CTransformComponent * pTransformBLAHa=m_pGameObjectManager->findGameObject("Obstacle2")->getTransform();
+		pTransformBLAHa->scale(0.001f,0.001f,0.001f);
+		CTransformComponent * pTransformBLAHb=m_pGameObjectManager->findGameObject("Obstacle3")->getTransform();
+		pTransformBLAHb->scale(0.001f,0.001f,0.001f);
+		CTransformComponent * pTransformBLAHf=m_pGameObjectManager->findGameObject("Player")->getTransform();
+		pTransformBLAHf->rotate(0,1.6f,0);
 
 	//Create the camera
 	CGameObject *pCameraGameObject=new CGameObject();
@@ -137,17 +130,17 @@ bool CGameApplication::initGame()
 	//Audio - Add to camera, don't call play until init has been called
 	///CGameObject* pO=m_pGameObjectManager->findGameObject("Player");
 	pCameraGameObject->addComponent(pAudio);
-	//Audio - play music audio source
-	//Audio - Create another audio component for music
-	CAudioSourceComponent *pSFX=new CAudioSourceComponent();
-	//Audio -If it is an mp3 or ogg then set stream to true
-	pAudio->setFilename("Sounds\laser1.mp3");
-	//Audio - stream to true
-	pAudio->setStream(false);
-	//Audio - Add to camera, don't call play until init has been called
-	///CGameObject* pO=m_pGameObjectManager->findGameObject("Player");
-	pCameraGameObject->addComponent(pSFX);
-	//Audio - play music audio source
+	////Audio - play music audio source
+	////Audio - Create another audio component for music
+	//CAudioSourceComponent *pSFX=new CAudioSourceComponent();
+	////Audio -If it is an mp3 or ogg then set stream to true
+	//pAudio->setFilename("Sounds\laser1.mp3");
+	////Audio - stream to true
+	//pAudio->setStream(false);
+	////Audio - Add to camera, don't call play until init has been called
+	/////CGameObject* pO=m_pGameObjectManager->findGameObject("Player");
+	//pCameraGameObject->addComponent(pSFX);
+	////Audio - play music audio source
 
 	//Simple C++ sound
 	//PlaySound(L"C:\\Users\\Bryan\\Documents\\GitHub\\Team-Gangnam-Style\\GP2\\Sounds\\GameTheme.mp3", NULL, SND_FILENAME);
@@ -176,6 +169,25 @@ bool CGameApplication::initGame()
 	m_Timer.start();
 	return true;
 }
+
+//void CGameApplication::DisplaySomeText(LPCWSTR textToDraw, int left, int right, int top)
+//{
+//// Create a D3DX font object
+//	//D3DXCreateFont( d3dMgr->getTheD3DDevice(), 20, 0, FW_BOLD, 0, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, TEXT("Arial"), &m_font );
+//
+//	// Create a colour for the text - in this case blue
+//	D3DCOLOR fontColor = D3DCOLOR_ARGB(255,0,0,255);   
+//
+//	// Create a rectangle to indicate where on the screen it should be drawn
+//	RECT rct;
+//	rct.left=left;
+//	rct.right=right;
+//	rct.top=top;
+//	rct.bottom=rct.top+20;
+//
+//	// Draw some text
+//	m_font->DrawText(NULL, textToDraw, -1, &rct, 0, fontColor );
+//}
 
 void CGameApplication::run()
 {
@@ -274,6 +286,7 @@ void CGameApplication::render()
 	//http://msdn.microsoft.com/en-us/library/bb173539%28v=vs.85%29.aspx - BMD
     m_pD3D10Device->ClearRenderTargetView( m_pRenderTargetView, ClearColor );
 	m_pD3D10Device->ClearDepthStencilView(m_pDepthStencelView,D3D10_CLEAR_DEPTH,1.0f,0);
+
 	//We need to iterate through all the Game Objects in the managers
 	for(vector<CGameObject*>::iterator iter=m_pGameObjectManager->getBegining();iter!=m_pGameObjectManager->getEnd();iter++)
 	{
@@ -463,6 +476,8 @@ void CGameApplication::moveL()
 
 void CGameApplication::update()
 {
+		//Draw the GUI
+	//DisplaySomeText(L"Health: ",20,50,40);
 	//CInput::getInstance().getJoypad(0)->update();
 	CAudioSystem::getInstance().update();
 	m_Timer.update();
@@ -478,7 +493,8 @@ void CGameApplication::update()
 	CGameObject* pObjector=m_pGameObjectManager->findGameObject(stringy);
 				//translate it
 			CTransformComponent* pTransform=pObjector->getTransform();
-				pTransform->translate(0,0,-0.1f);
+				pTransform->translate(0,0,-1.0f);
+				pTransform->rotate(1.0f,0,0);
 	}
 	//Next loop will spawn obstacles
 	//While there are less than X obstacles on the field
@@ -564,8 +580,8 @@ void CGameApplication::update()
 	{
 		//For now, this key will test the SFX code
 		//Eventually this will be done via gameplay
-		CAudioSourceComponent* pSF=m_pGameObjectManager->findGameObject("Camera")->getComponent("pSFX");
-		pSF->play();
+		//CAudioSourceComponent* pSF=m_pGameObjectManager->findGameObject("Camera")->getComponent("pSFX");
+		//pSF->play();
 		
 	}
 	//Update GameObjectManager

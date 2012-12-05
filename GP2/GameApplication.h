@@ -8,7 +8,8 @@
 #include <sstream>
 
 #include "GameObjectManager.h"
-
+#include <d3d9.h>
+#include <d3dx9.h>
 #include "MaterialComponent.h"
 #include "TransformComponent.h"
 #include "CameraComponent.h"
@@ -47,11 +48,12 @@ private:
 	, string textureB, string textureP, float xpos, float ypos, float zpos);
 	CGameObject* createTerrain(string name,string effect,string texture,float xsize,float ysize,float zsize);
 	string convertInt(int number)
-{
+	{
    stringstream ss;//create a stringstream
    ss << number;//add number to the stream
    return ss.str();//return a string with the contents of the stream
-}
+	}
+//void DisplaySomeText(LPCWSTR textToDraw, int left, int right, int top);
 	bool initWindow();
 	void render();
 	void moveF();
