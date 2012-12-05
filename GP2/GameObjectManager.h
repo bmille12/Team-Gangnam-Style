@@ -20,6 +20,8 @@ public:
 
 	//add game object
 	void addGameObject(CGameObject * pObject);
+	//Remove game Object
+	void removeGameObject(string pObject);
 
 	//get the beginning of vector for iteration
 	vector<CGameObject*>::iterator getBegining();

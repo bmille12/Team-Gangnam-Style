@@ -95,6 +95,15 @@ public:
 		m_vecRotation.z+=z;
 	};
 
+	float getRotationX()
+	{
+		return m_matRotation._11;
+	}
+	float getRotationZ()
+	{
+		return m_matRotation._13;
+	}
+
 	//translate
 	void translate(float x,float y,float z)
 	{

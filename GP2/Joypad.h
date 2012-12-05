@@ -6,8 +6,10 @@
 class CJoypad
 {
 public:
+	CJoypad();
 	CJoypad(int index);
 	~CJoypad();
+
 
 	void update();
 
@@ -30,9 +32,17 @@ public:
 	{
 		return m_fRightThumbstickY;
 	};
+	static CJoypad& getInstance(int index)
+	{
+		static CJoypad instance;
+		return instance;
+	}
 private:
 	XINPUT_STATE m_JoypadState;
 	int m_iIndex;
+	bool m_bIsConnected;
+
+	CJoypad *m_pJoypads;
 
 	float m_fLeftThumbstickX;
 	float m_fLeftThumbstickY;

@@ -23,6 +23,7 @@ CGameObject::CGameObject(int Health)
 
 CGameObject::~CGameObject()
 {
+
 	vector<IComponent*>::iterator iter=m_Components.begin();
 	while(iter!=m_Components.end())
 	{
@@ -63,6 +64,11 @@ int CGameObject::updateHealth(int x)
 	{
 		return 1;
 	}
+}
+
+int CGameObject::getHealth()
+{
+	return health;
 }
 
 

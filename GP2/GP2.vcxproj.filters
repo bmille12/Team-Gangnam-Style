@@ -49,6 +49,18 @@
     <Filter Include="Components\Camera">
       <UniqueIdentifier>{04c31a65-dfe5-4bbb-9678-f1fa5f74b35e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components\Physics">
+      <UniqueIdentifier>{f8cafc6e-6390-4f7d-88fc-1fd3427c0387}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Audio">
+      <UniqueIdentifier>{6d230186-ebe0-42ae-a59e-35f7263bac13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{7655962f-5757-4274-aaae-abe9d187ff59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sounds">
+      <UniqueIdentifier>{5d9a1444-aa3d-4019-b901-9d380efc93ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -101,6 +113,18 @@
     </ClCompile>
     <ClCompile Include="MeshComponent.cpp">
       <Filter>Components\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioListenerComponent.cpp">
+      <Filter>Components\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSourceComponent.cpp">
+      <Filter>Components\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem.cpp">
+      <Filter>Components\Audio</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -164,6 +188,18 @@
     <ClInclude Include="Geometry.h">
       <Filter>Components\Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="Physics.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioListenerComponent.h">
+      <Filter>Components\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSourceComponent.h">
+      <Filter>Components\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem.h">
+      <Filter>Components\Audio</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ScreenSpace.fx">
@@ -195,6 +231,9 @@
     </None>
     <None Include="Environment.fx">
       <Filter>Effects</Filter>
+    </None>
+    <None Include="Music.ogg">
+      <Filter>Sounds</Filter>
     </None>
   </ItemGroup>
 </Project>

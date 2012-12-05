@@ -19,6 +19,18 @@ CInput::~CInput()
 		delete m_pMouse;
 		m_pMouse=0;
 	}
+	if(m_pJoypads)
+	{
+		for(int i=0;i<MAX_NO_JOYPADS;i++)
+		{
+			if(m_pJoypads[i])
+			{
+				delete m_pJoypads[i];
+			}
+
+			delete [] m_pJoypads;
+		}
+	}
 }
 
 void CInput::init()

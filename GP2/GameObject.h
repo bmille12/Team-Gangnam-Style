@@ -46,6 +46,7 @@ public:
 	void update(float elapsedTime);
 	int updateHealth(int x);
 	int health;
+	int getHealth();
 	//set name
 	void setName(const string& name)
 	{

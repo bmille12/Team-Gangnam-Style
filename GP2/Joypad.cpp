@@ -1,10 +1,12 @@
 #include "Joypad.h"
 #include <math.h>
 
+
 CJoypad::CJoypad(int index)
 {
 	m_iIndex=index;
 	ZeroMemory( &m_JoypadState, sizeof(XINPUT_STATE) );
+	m_bIsConnected=true;
 }
 
 CJoypad::~CJoypad()

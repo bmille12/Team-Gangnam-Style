@@ -1,6 +1,6 @@
 #include "GameApplication.h"
 #include "GameObject.h"
-
+#include "Joypad.h"
 
 #include "Input.h"
 #include "Keyboard.h"
@@ -14,6 +14,7 @@ CGameApplication::CGameApplication(void)
 	m_pDepthStencelView=NULL;
 	m_pDepthStencilTexture=NULL;
 	m_pGameObjectManager=new CGameObjectManager();
+	debugStatus = false;
 }
 
 CGameApplication::~CGameApplication(void)
@@ -52,8 +53,16 @@ bool CGameApplication::init()
 		return false;
 	if (!initInput())
 		return false;
+	if (!initAudio())
+		return false;
 	if (!initGame())
 		return false;
+	return true;
+}
+
+bool CGameApplication::initAudio()
+{
+	CAudioSystem::getInstance().init();
 	return true;
 }
 
@@ -63,64 +72,48 @@ bool CGameApplication::initGame()
     //http://msdn.microsoft.com/en-us/library/bb173590%28v=VS.85%29.aspx - BMD
     m_pD3D10Device->IASetPrimitiveTopology( D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST );	
 
-<<<<<<< HEAD
-
-	CGameObject *pTestGameObject=new CGameObject();
-	//Set the name
-	pTestGameObject->setName("Sky");
-	CMeshComponent *pMesh=modelloader.loadModelFromFile(m_pD3D10Device,"sphere.fbx");
-	//CMeshComponent *pMesh=modelloader.createCube(m_pD3D10Device,10.0f,10.0f,10.0f);
-	pMesh->SetRenderingDevice(m_pD3D10Device);
-	CMaterialComponent *pMaterial=new CMaterialComponent();
-	pMaterial=new CMaterialComponent();
-	pMaterial->SetRenderingDevice(m_pD3D10Device);
-	pMaterial->setEffectFilename("Environment.fx");
-	pMaterial->loadEnvironmentTexture("Mars.dds");
-	pTestGameObject->addComponent(pMaterial);
-	pTestGameObject->addComponent(pMesh);
-	//add the game object
-	m_pGameObjectManager->addGameObject(pTestGameObject);
-
-	//Create Game Object
-	pTestGameObject=new CGameObject();
-	//Set the name
-	pTestGameObject->setName("Test");
-	//Position
-	pTestGameObject->getTransform()->setPosition(0.0f,0.0f,10.0f);
-	//create material
-	pMaterial=new CMaterialComponent();
-	pMaterial->SetRenderingDevice(m_pD3D10Device);
-	pMaterial->setEffectFilename("Parallax.fx");
-	pMaterial->setAmbientMaterialColour(D3DXCOLOR(0.2f,0.2f,0.2f,1.0f));
-	pMaterial->loadDiffuseTexture("armoredrecon_diff.png");
-	pMaterial->loadSpecularTexture("armoredrecon_spec.png");
-	pMaterial->loadBumpTexture("armoredrecon_N.png");
-	pMaterial->loadParallaxTexture("armoredrecon_Height.png");
-	pTestGameObject->addComponent(pMaterial);
-
-	//Create Mesh
-	pMesh=modelloader.loadModelFromFile(m_pD3D10Device,"armoredrecon.fbx");
-	//CMeshComponent *pMesh=modelloader.createCube(m_pD3D10Device,10.0f,10.0f,10.0f);
-	pMesh->SetRenderingDevice(m_pD3D10Device);
-	pTestGameObject->addComponent(pMesh);
-	//add the game object
-	m_pGameObjectManager->addGameObject(pTestGameObject);
-=======
-
->>>>>>> Working on top-view, other changes
-
 	//add the game objects
+	//We will use methods to create each type of object
+	//First, the skybox
 	m_pGameObjectManager->addGameObject(createSky("Sky","sphere.fbx","Environment.fx","Mars.dds"));
-	m_pGameObjectManager->addGameObject(createTerrain("Terrain","Transform.fx","Face.png",2,1,4));
-	m_pGameObjectManager->addGameObject(createTank("Player","armoredrecon.fbx","Parallax.fx","armoredrecon_diff.png","armoredrecon_spec",
-	"armoredrecon_N.png","armoredrecon_Height.png",0.0f,0.0f,10.0f));
+	//Next, the terrain
+	m_pGameObjectManager->addGameObject(createTerrain("Terrain","Specular.fx","face.png",8,1,60));
+	//Next, the player tank
+	m_pGameObjectManager->addGameObject(createModel("Player","Tank1.fbx","DirectionLight.fx","armoredrecon_diff.png","armoredrecon_spec",
+	"armoredrecon_N.png","armoredrecon_Height.png",0.0f,-10.0f,0.0f));
+	//Finally, the obstacle - this will soon be done in update() and loop for constantly spawning enemies
+	m_pGameObjectManager->addGameObject(createModel("Statue","humanoid.fbx","Parallax.fx", "armoredrecon_diff.png","armoredrecon_spec",
+	"armoredrecon_N.png","armoredrecon_Height.png", 0,0,140));
+	//Next loop will spawn obstacles
+	//While there are less than X obstacles on the field
+	//	while ( obstacleCount < 4 )
+	//	{
+	//// ---X will change based on level
+	////Spawn a new obstacle
+	//		//stringy2 = convertInt(obstacleCount);
+	//		//stringy = stringy+stringy2;
 
+	//		m_pGameObjectManager->addGameObject(createModel("obstacle","Tank1.fbx","DirectionLight.fx","armoredrecon_diff.png","armoredrecon_spec",
+	//"armoredrecon_N.png","armoredrecon_Height.png",0.0f,-10.0f,-100.0f));
+	//		//iterate obstacleCount
+	//		obstacleCount++;
+	////end while loop
+	//	}
+	//	obstacleCount =0;
+	m_pGameObjectManager->addGameObject(createModel("Obstacle0","Tank1.fbx","DirectionLight.fx","armoredrecon_diff.png","armoredrecon_spec",
+	"armoredrecon_N.png","armoredrecon_Height.png",0.0f,-10.0f,-100.0f));
+	m_pGameObjectManager->addGameObject(createModel("Obstacle1","Tank1.fbx","DirectionLight.fx","armoredrecon_diff.png","armoredrecon_spec",
+	"armoredrecon_N.png","armoredrecon_Height.png",0.0f,-10.0f,-100.0f));
+	m_pGameObjectManager->addGameObject(createModel("Obstacle2","Tank1.fbx","DirectionLight.fx","armoredrecon_diff.png","armoredrecon_spec",
+	"armoredrecon_N.png","armoredrecon_Height.png",0.0f,-10.0f,-100.0f));
+	m_pGameObjectManager->addGameObject(createModel("Obstacle3","Tank1.fbx","DirectionLight.fx","armoredrecon_diff.png","armoredrecon_spec",
+	"armoredrecon_N.png","armoredrecon_Height.png",0.0f,-10.0f,-100.0f));
+	m_pGameObjectManager->addGameObject(createModel("Obstacle4","Tank1.fbx","DirectionLight.fx","armoredrecon_diff.png","armoredrecon_spec",
+	"armoredrecon_N.png","armoredrecon_Height.png",0.0f,-10.0f,-100.0f));
 
-	//Create Mesh
-
-
+	//Create the camera
 	CGameObject *pCameraGameObject=new CGameObject();
-	pCameraGameObject->getTransform()->setPosition(0.0f,5.0f,-5.0f);
+	pCameraGameObject->getTransform()->setPosition(0.0f,0.0f,-50.0f);
 	pCameraGameObject->setName("Camera");
 
 	D3D10_VIEWPORT vp;
@@ -135,7 +128,33 @@ bool CGameApplication::initGame()
 	pCamera->setFarClip(1000.0f);
 	pCamera->setNearClip(0.1f);
 	pCameraGameObject->addComponent(pCamera);
+	//Audio - Create another audio component for music
+	CAudioSourceComponent *pAudio=new CAudioSourceComponent();
+	//Audio -If it is an mp3 or ogg then set stream to true
+	pAudio->setFilename("Sounds\\Soviet Union.mp3");
+	//Audio - stream to true
+	pAudio->setStream(true);
+	//Audio - Add to camera, don't call play until init has been called
+	///CGameObject* pO=m_pGameObjectManager->findGameObject("Player");
+	pCameraGameObject->addComponent(pAudio);
+	//Audio - play music audio source
+	//Audio - Create another audio component for music
+	CAudioSourceComponent *pSFX=new CAudioSourceComponent();
+	//Audio -If it is an mp3 or ogg then set stream to true
+	pAudio->setFilename("Sounds\laser1.mp3");
+	//Audio - stream to true
+	pAudio->setStream(false);
+	//Audio - Add to camera, don't call play until init has been called
+	///CGameObject* pO=m_pGameObjectManager->findGameObject("Player");
+	pCameraGameObject->addComponent(pSFX);
+	//Audio - play music audio source
 
+	//Simple C++ sound
+	//PlaySound(L"C:\\Users\\Bryan\\Documents\\GitHub\\Team-Gangnam-Style\\GP2\\Sounds\\GameTheme.mp3", NULL, SND_FILENAME);
+
+	//Audio - Attach a listener to the camera
+	CAudioListenerComponent *pListener=new CAudioListenerComponent();
+	pCameraGameObject->addComponent(pListener);
 	m_pGameObjectManager->addGameObject(pCameraGameObject);
 
 	CGameObject *pLightGameObject=new CGameObject();
@@ -151,7 +170,9 @@ bool CGameApplication::initGame()
 
 	//init, this must be called after we have created all game objects
 	m_pGameObjectManager->init();
-	
+	pAudio->play();
+	obstacleCount=0;
+	m_keyTimer=0;
 	m_Timer.start();
 	return true;
 }
@@ -170,10 +191,13 @@ void CGameApplication::run()
 
 CGameObject* CGameApplication::createTerrain(string name,string effect,string texture,float xsize,float ysize,float zsize)
 {
+	//method for creating a terrain
 	CGameObject *pObject=new CGameObject();
 	//Set the name
 	pObject->setName(name);
+	//Creates a simple cube
 	CMeshComponent *pMesh=modelloader.createCube(m_pD3D10Device,xsize,ysize,zsize);
+	//Set the basic objects attributes
 	pMesh->SetRenderingDevice(m_pD3D10Device);
 	CMaterialComponent *pMaterial=new CMaterialComponent();
 	pMaterial=new CMaterialComponent();
@@ -182,17 +206,21 @@ CGameObject* CGameApplication::createTerrain(string name,string effect,string te
 	pMaterial->loadEnvironmentTexture(texture);
 	pObject->addComponent(pMaterial);
 	pObject->addComponent(pMesh);
+	//Position is fixed; Only one terrain needed
 	pObject->getTransform()->setPosition(0.0f,-1.0f,0.0f);
+	//Returns the object
 	return pObject;
 }
 
 CGameObject* CGameApplication::createSky(string name, string model, string effect, string texture)
 {
+	//Method will create a skybox, no need to ste position since camera/player are fixed
 	CGameObject *pObject=new CGameObject();
 	//Set the name
 	pObject->setName(name);
+	//Load in the model
 	CMeshComponent *pMesh=modelloader.loadModelFromFile(m_pD3D10Device,model);
-	//CMeshComponent *pMesh=modelloader.createCube(m_pD3D10Device,10.0f,10.0f,10.0f);
+	//Set up basic model attributes
 	pMesh->SetRenderingDevice(m_pD3D10Device);
 	CMaterialComponent *pMaterial=new CMaterialComponent();
 	pMaterial=new CMaterialComponent();
@@ -201,12 +229,16 @@ CGameObject* CGameApplication::createSky(string name, string model, string effec
 	pMaterial->loadEnvironmentTexture(texture);
 	pObject->addComponent(pMaterial);
 	pObject->addComponent(pMesh);
+	//Return the object
 	return pObject;
 }
 
-CGameObject* CGameApplication::createTank(string name, string model, string effect, string textureD, string textureS
+CGameObject* CGameApplication::createModel(string name, string model, string effect, string textureD, string textureS
 	, string textureB, string textureP, float xpos, float ypos, float zpos)
 {
+	//Method will be used to create game objects - player, obstacles, etc
+	//Method uses many parameters for dynamic object creation
+
 	CGameObject *pObject=new CGameObject();
 	//Set the name
 	pObject->setName(name);
@@ -214,6 +246,7 @@ CGameObject* CGameApplication::createTank(string name, string model, string effe
 	pObject->getTransform()->setPosition(xpos,ypos,zpos);
 	//create material
 	CMaterialComponent *pMaterial=new CMaterialComponent();
+	//Set up basic object attributes
 	pMaterial->SetRenderingDevice(m_pD3D10Device);
 	pMaterial->setEffectFilename(effect);
 	pMaterial->setAmbientMaterialColour(D3DXCOLOR(0.2f,0.2f,0.2f,1.0f));
@@ -224,11 +257,11 @@ CGameObject* CGameApplication::createTank(string name, string model, string effe
 	pObject->addComponent(pMaterial);
 
 	//Create Mesh
+	//Load in model
 	CMeshComponent *pMesh=modelloader.loadModelFromFile(m_pD3D10Device,model);
-	//CMeshComponent *pMesh=modelloader.createCube(m_pD3D10Device,10.0f,10.0f,10.0f);
 	pMesh->SetRenderingDevice(m_pD3D10Device);
 	pObject->addComponent(pMesh);
-	//add the game object
+	//return the game object
 	return pObject;
 }
 
@@ -303,51 +336,239 @@ void CGameApplication::render()
     m_pSwapChain->Present( 0, 0 );
 }
 
+void CGameApplication::saveGame()
+{
+	//Method for saving the game
+
+	//Create locals 
+	//--Output string
+	string op;
+	//--Input integer
+	int val;
+	//--Converter object(int to string)
+	ostringstream con;
+	//Output to text file
+	ofstream outputFile;
+	//Open/create save file
+	outputFile.open("save.txt");
+	//For now, the only value being saved will be the player health
+	//Later, will save level, position, score, and possibly even active enemies
+	//Get player object
+	val=m_pGameObjectManager->findGameObject("Player")->getHealth();
+	//Convert player health to string
+	con << val;
+	//Set output to that
+	op = con.str();
+	//Write to file
+	outputFile << op + "\n";
+	//Close file
+	outputFile.close();
+}
+void CGameApplication::loadGame()
+{
+	//Method for saving the game
+
+	//Create locals 
+	//--Input string
+	string ip;
+	//Output int
+	int val;
+	//Converter object(string to int)
+	istringstream con;
+	//Input file being loaded
+	ifstream inputFile;
+	//Open saved game
+	inputFile.open("save.txt");
+	//Check that input file is open
+	if ( inputFile.is_open())
+	{
+		//Make sure file is good for i/o operation
+		while (inputFile.good())
+		{
+			//Read in each line of saved game. For now, 1 value. Later, we'll use an array to hold then set player values.
+			getline (inputFile,ip);
+		}
+		//Close file
+	inputFile.close();
+	}
+}
+
+void CGameApplication::moveF()
+{
+	//Method for moving forward; debug only
+
+if(debugStatus==true)
+	{
+		//Check for debug status, if true then move forward. Camera will always face main game area.
+		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Camera")->getTransform();
+		pTransform->translate(0.0f,0.0f,0.1f);
+	}
+	else
+	{
+		//Else do nothing
+
+	}
+}
+void CGameApplication::moveB()
+{
+	//Method for moving backwards; debug only
+if(debugStatus==true)
+	{
+		//If on debug view, camera will move backwards, always facing main game area
+		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Camera")->getTransform();
+		pTransform->translate(0.0f,0.0f,-0.1f);
+	}
+	else
+		//else do nothing
+	{
+
+	}
+}
+void CGameApplication::moveR()
+{
+	//Method for moving right
+
+	//Check debug status
+	if(debugStatus==true)
+	{
+		//If on debug view, move camera right, it will always face main game area
+		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Camera")->getTransform();
+		pTransform->translate(0.1f,0.0f,0);
+	}
+	else
+	{
+		//If not on debug, move player right
+		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Player")->getTransform();
+		pTransform->translate(0.1f,0.0f,0);
+	}
+}
+void CGameApplication::moveL()
+{
+	//Method for moving to the left
+
+	//Check debug status
+	if(debugStatus==true)
+	{
+		//While on debug view, camera will move right, always looking at the main game ares
+		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Camera")->getTransform();
+		pTransform->translate(-0.1f,0.0f,0);
+	}
+	else
+	{
+		//If not on debug, player moves left
+		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Player")->getTransform();
+		pTransform->translate(-0.1f,0.0f,0);
+	}
+}
+
 void CGameApplication::update()
 {
+	//CInput::getInstance().getJoypad(0)->update();
+	CAudioSystem::getInstance().update();
 	m_Timer.update();
+	m_keyTimer++;
+	//Obstacles will perpetually move 
+	//For loop here: For every "obstacle" object
+	//Get the transform component for each one
+	for (int i=0;i<obstacleCount;i++)
+	{
+			stringy = "Obstacle";
+			stringy2 = convertInt(i);
+			stringy = stringy+stringy2;
+	CGameObject* pObjector=m_pGameObjectManager->findGameObject(stringy);
+				//translate it
+			CTransformComponent* pTransform=pObjector->getTransform();
+				pTransform->translate(0,0,-0.1f);
+	}
+	//Next loop will spawn obstacles
+	//While there are less than X obstacles on the field
+		while ( obstacleCount < 4 && m_keyTimer > 90 )
+		{
+	// ---X will change based on level
+	//Spawn a new obstacle
+			int i=obstacleCount;
+			stringy = "Obstacle";
+			stringy2 = convertInt(obstacleCount);
+			stringy = stringy+stringy2;
 
-	if (CInput::getInstance().getKeyboard()->isKeyDown((int)'W'))
-	{
-		//play sound
-		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Player")->getTransform();
-		pTransform->translate(0.0f,0.0f,m_Timer.getElapsedTime()*4);
-	}
-	else if (CInput::getInstance().getKeyboard()->isKeyDown((int)'S'))
-	{
-		//play sound
-		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Player")->getTransform();
-		pTransform->translate(0.0f,0.0f,m_Timer.getElapsedTime()*-4);
+			CGameObject* pObjector=m_pGameObjectManager->findGameObject(stringy);
+			CTransformComponent* pTransform=pObjector->getTransform();
+				pTransform->setPosition(0,-10,100);
+			//Reset timer
+			m_keyTimer=0;
+			//iterate obstacleCount
+			obstacleCount++;
+	//end while loop
+		}
 
 
-	}
-	if (CInput::getInstance().getKeyboard()->isKeyDown((int)'D'))
+	//if obstacle is out of bounds, delete it
+	//m_pGameObjectManager->removeGameObject(gObject);
+
+	//End loop
+	
+
+
+	//This code will take in the W key, only used when in debug view
+		if (CInput::getInstance().getKeyboard()->isKeyDown((int)'W')/*||CInput::getInstance().getJoypad(0)->getLeftThumbStickY()>0*/)
 	{
-		//play sound
-		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Player")->getTransform();
-		pTransform->rotate(0.0f,m_Timer.getElapsedTime()*2,0.0f);
-		CTransformComponent * pTransform2=m_pGameObjectManager->findGameObject("Sky")->getTransform();
-		pTransform2->rotate(0.0f,m_Timer.getElapsedTime()*2,0.0f);
+		//Calls the move forward method
+		moveF();
 	}
-	else if (CInput::getInstance().getKeyboard()->isKeyDown((int)'A'))
+	//This code will take in the S key, again only used for debug
+	else if (CInput::getInstance().getKeyboard()->isKeyDown((int)'S')/*||CInput::getInstance().getJoypad(0)->getLeftThumbStickY()<0)*/)
 	{
-		//play sound
-		CTransformComponent * pTransform=m_pGameObjectManager->findGameObject("Player")->getTransform();
-		pTransform->rotate(0.0f,m_Timer.getElapsedTime()*-2,0.0f);
-		CTransformComponent * pTransform2=m_pGameObjectManager->findGameObject("Sky")->getTransform();
-		pTransform2->rotate(0.0f,m_Timer.getElapsedTime()*-2,0.0f);
+		//Calls move backward methpd
+		moveB();
 	}
+	//Take in D key
+	if (CInput::getInstance().getKeyboard()->keyPressed((int)'D')/*||CInput::getInstance().getJoypad(0)->getLeftThumbStickX()>0*/)
+	{
+		//Call move right method
+		moveR();
+	}
+	//Take in A key
+	else if (CInput::getInstance().getKeyboard()->keyPressed((int)'A')/*||CInput::getInstance().getJoypad(0)->getLeftThumbStickY()<0*/)
+	{
+		//Call move left method
+		moveL();
+	}
+	//Take in K Key
 	if (CInput::getInstance().getKeyboard()->isKeyDown((int)'K'))
 	{
-		
-		int kill=m_pGameObjectManager->findGameObject("Player")->updateHealth(-100);
-		if (kill = 0)
+		//For now, this key will call the Load Game function
+		//Eventually this will be done via a menu
+		loadGame();
+	}
+	//Take in T key
+	if (CInput::getInstance().getKeyboard()->isKeyDown((int)'T'))
+	{
+		//Check for debug status
+		if ( debugStatus == false )
 		{
-			//remove from gameobjectmanager?
-			//or delete game object directly - may cause problems
-			//m_pGameObjectManager->clear("Player");
+			//If not on debug, turn debug view on
+			debugStatus = true;
 		}
 	}
+	//Take in Y Key
+		if (CInput::getInstance().getKeyboard()->isKeyDown((int)'Y'))
+	{
+		//Check for debug status
+		if ( debugStatus == true )
+		{
+			//If on debug, turn debug view off
+			debugStatus = false;
+		}
+	}
+		if (CInput::getInstance().getKeyboard()->isKeyDown((int)'Q'))
+	{
+		//For now, this key will test the SFX code
+		//Eventually this will be done via gameplay
+		CAudioSourceComponent* pSF=m_pGameObjectManager->findGameObject("Camera")->getComponent("pSFX");
+		pSF->play();
+		
+	}
+	//Update GameObjectManager
 	m_pGameObjectManager->update(m_Timer.getElapsedTime());
 
 	

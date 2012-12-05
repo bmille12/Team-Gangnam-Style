@@ -28,6 +28,12 @@ void CGameObjectManager::addGameObject(CGameObject * pObject)
 	}
 
 }
+void CGameObjectManager::removeGameObject(string pObject)
+{
+	//CGameObject* o=findGameObject(pObject);
+	//m_GameObjectsMap.erase(pObject);
+	//o->update(-1000);
+}
 
 //get beginning of vector
 vector<CGameObject*>::iterator CGameObjectManager::getBegining()
