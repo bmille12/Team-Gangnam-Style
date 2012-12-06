@@ -478,7 +478,7 @@ void CGameApplication::update()
 {
 		//Draw the GUI
 	//DisplaySomeText(L"Health: ",20,50,40);
-	CInput::getInstance().getJoypad(0)->update();
+	//CInput::getInstance().getJoypad(0)->update();
 	CAudioSystem::getInstance().update();
 	m_Timer.update();
 	m_keyTimer++;
@@ -526,25 +526,25 @@ void CGameApplication::update()
 
 
 	//This code will take in the W key, only used when in debug view
-		if (CInput::getInstance().getKeyboard()->isKeyDown((int)'W')||CInput::getInstance().getJoypad(0)->getLeftThumbStickY()>1000)
+		if (CInput::getInstance().getKeyboard()->isKeyDown((int)'W')/*||CInput::getInstance().getJoypad(0)->getLeftThumbStickY()>1000*/)
 	{
 		//Calls the move forward method
 		moveF();
 	}
 	//This code will take in the S key, again only used for debug
-	else if (CInput::getInstance().getKeyboard()->isKeyDown((int)'S')||CInput::getInstance().getJoypad(0)->getLeftThumbStickY()<-1000)  
+	else if (CInput::getInstance().getKeyboard()->isKeyDown((int)'S')/*||CInput::getInstance().getJoypad(0)->getLeftThumbStickY()<-1000*/)  
 	{
 		//Calls move backward methpd
 		moveB();
 	}
 	//Take in D key
-	if (CInput::getInstance().getKeyboard()->keyPressed((int)'D')||CInput::getInstance().getJoypad(0)->getLeftThumbStickX()>1000)
+	if (CInput::getInstance().getKeyboard()->keyPressed((int)'D')/*||CInput::getInstance().getJoypad(0)->getLeftThumbStickX()>1000*/)
 	{
 		//Call move right method
 		moveR();
 	}
 	//Take in A key
-	else if (CInput::getInstance().getKeyboard()->keyPressed((int)'A')||CInput::getInstance().getJoypad(0)->getLeftThumbStickY()<-1000)
+	else if (CInput::getInstance().getKeyboard()->keyPressed((int)'A')/*||CInput::getInstance().getJoypad(0)->getLeftThumbStickY()<-1000*/)
 	{
 		//Call move left method
 		moveL();
