@@ -65,7 +65,7 @@ void CJoypad::update()
 		}
 		else
 			m_fRightTrigger=0.0f;
-		if (m_JoypadState.Gamepad.bRightTrigger>XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
+		if (m_JoypadState.Gamepad.bLeftTrigger>XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
 		{
 			m_fLeftTrigger=((float)m_JoypadState.Gamepad.bLeftTrigger/256.0f);
 		}

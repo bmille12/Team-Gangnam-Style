@@ -22,7 +22,7 @@ public:
 		return m_pMouse;
 	};
 
-	CJoypad * getJoypad(int playerIndex)
+	CJoypad * getJoypad(int playerIndex)    
 	{
 		return m_pJoypads[playerIndex];
 	};
