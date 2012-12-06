@@ -142,9 +142,7 @@ bool CGameApplication::initGame()
 	//pCameraGameObject->addComponent(pSFX);
 	////Audio - play music audio source
 
-	//Simple C++ sound
-	//PlaySound(L"C:\\Users\\Bryan\\Documents\\GitHub\\Team-Gangnam-Style\\GP2\\Sounds\\GameTheme.mp3", NULL, SND_FILENAME);
-
+	
 	//Audio - Attach a listener to the camera
 	CAudioListenerComponent *pListener=new CAudioListenerComponent();
 	pCameraGameObject->addComponent(pListener);
@@ -552,9 +550,9 @@ void CGameApplication::update()
 	//Take in K Key
 	if (CInput::getInstance().getKeyboard()->isKeyDown((int)'K'))
 	{
-		//For now, this key will call the Load Game function
+		//For now, this key will call the Save Game function
 		//Eventually this will be done via a menu
-		loadGame();
+		saveGame();
 	}
 	//Take in T key
 	if (CInput::getInstance().getKeyboard()->isKeyDown((int)'T'))
